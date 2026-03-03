@@ -1,6 +1,4 @@
-from pydantic import BaseModel
-
-
-class SuspendEdge(BaseModel):
-    from_date: str | None
-    to_date: str | None
+class SuspendEdge:
+    def __init__(self, from_date: str, to_date: str) -> None:
+        self.from_date = from_date
+        self.to_date = to_date

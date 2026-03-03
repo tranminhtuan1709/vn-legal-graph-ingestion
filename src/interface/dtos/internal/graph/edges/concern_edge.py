@@ -1,5 +1,3 @@
-from pydantic import BaseModel
-
-
-class ConcernEdge(BaseModel):
-    created_at: str
+class ConcernEdge:
+    def __init__(self, created_at: str) -> None:
+        self.created_at = created_at
