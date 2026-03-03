@@ -1,5 +1,16 @@
 class PartDto:
     def __init__(self, id: int, vbpl_id: int, vbpl_chapter_id: int, part_number: str, part_name: str) -> None:
+        """
+        Init PartDto with provided attributes.
+
+        Args:
+            id (int): ID of the part.
+            vbpl_id (int): ID of the document which contains the part.
+            vbpl_chapter_id (int): ID of the chapter which contains the part.
+            part_number (str): Number of the part.
+            part_name (str): Name of the part.
+        """
+        
         self.id = id
         self.vbpl_id = vbpl_id
         self.vbpl_chapter_id = vbpl_chapter_id

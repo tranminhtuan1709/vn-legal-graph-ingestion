@@ -12,6 +12,22 @@ class DocumentNode:
         status: str,
         summary: str
     ) -> None:
+        """
+        Init DocumentNode with provided attributes.
+
+        Args:
+            node_id (str): ID of the node.
+            created_at (str): Timestamp when the node is crrated. Datetime format: `yyyy-mm-dd hh:mm:ss`.
+            document_id (int): ID of the document.
+            document_number (str): Number of the document.
+            document_name (str): Name of the document.
+            issued_date (str): Issued date of the document.
+            effective_date (str): Effective date of the document.
+            expiry_date (str): Expiry date of the document.
+            status (str): Status of the document.
+            summary (str): Small note (subject line) of the document.
+        """
+        
         self.node_id = node_id
         self.created_at = created_at
         self.document_id = document_id
