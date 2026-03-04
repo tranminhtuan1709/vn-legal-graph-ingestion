@@ -6,12 +6,12 @@ class ArticleVersionDto:
         vbpldsd_id: int,
         dieu_sd_id: int,
         dieu_dsd_id: int,
-        phu_luc_sd: str,
-        phu_luc_dsd: str,
-        from_date: str,
-        to_date: str,
-        bai_bo_noi_dung_truoc: bool,
-        noi_dung_sua_doi: str
+        phu_luc_sd: str | None,
+        phu_luc_dsd: str | None,
+        from_date: str | None,
+        to_date: str | None,
+        bai_bo_noi_dung_truoc: bool | None,
+        noi_dung_sua_doi: str | None
     ) -> None:
         """
         Init ArticleVersionDto with provided attributes.
@@ -22,12 +22,12 @@ class ArticleVersionDto:
             vbpldsd_id (int): ID of the document which contains the modified article.
             dieu_sd_id (int): ID of the modifying article.
             dieu_dsd_id (int): ID of the modified article.
-            phu_luc_sd (str): Number of the appendix which contains the modifying article.
-            phu_luc_dsd (str): Number of the appendix which contains the modified article.
-            from_date (str): Start date of the version. Date format: `yyyy-mm-dd`.
-            to_date (str): End date of this version. Date format: `yyyy-mm-dd`.
-            bai_bo_noi_dung_truoc (bool): Whether this version abolish the previous content.
-            noi_dung_sua_doi (str): Modification content of the version.
+            phu_luc_sd (str | None): Number of the appendix which contains the modifying article.
+            phu_luc_dsd (str | None): Number of the appendix which contains the modified article.
+            from_date (str | None): Start date of the version. Date format: `yyyy-mm-dd`.
+            to_date (str | None): End date of this version. Date format: `yyyy-mm-dd`.
+            bai_bo_noi_dung_truoc (bool | None): Whether this version abolish the previous content.
+            noi_dung_sua_doi (str | None): Modification content of the version.
         """
 
         self.version_id = version_id
