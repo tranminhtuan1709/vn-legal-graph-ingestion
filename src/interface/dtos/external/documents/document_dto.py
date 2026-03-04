@@ -13,8 +13,8 @@ class DocumentDto:
         id_loai_van_ban: int | None,
         linh_vuc: str | None,
         id_linh_vuc: int | None,
-        co_quan_ban_hanh: list[str | None],
-        id_co_quan_ban_hanh: list[int | None]
+        co_quan_ban_hanh: list[str],
+        id_co_quan_ban_hanh: list[int]
     ) -> None:
         """
         Init DocumentDto with provided attributes.
@@ -32,8 +32,8 @@ class DocumentDto:
             id_loai_van_ban (int | None): ID of the document type.
             linh_vuc (str | None): Document sector.
             id_linh_vuc (int | None): ID of the document sector.
-            co_quan_ban_hanh (list[str | None]): List of issuing authorities (each one separated by a comma).
-            id_co_quan_ban_hanh (list[int | None]): List of ID of issuing authorities.
+            co_quan_ban_hanh (list[str]): List of issuing authorities.
+            id_co_quan_ban_hanh (list[int]): List of ID of issuing authorities.
         """
         
         self.id = id

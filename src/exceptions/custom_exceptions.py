@@ -18,7 +18,3 @@ class BaseError(Exception):
 
 class ValidationError(BaseError):
     pass
-
-
-class NormalizationError(BaseError):
-    pass

@@ -33,8 +33,8 @@ class DocumentValidator:
         - `linh_vuc`: Can be null, but must be a string when not null.
         - `id_loai_van_ban`: Can be null, but must be an integer when not null.
         - `id_linh_vuc`: Can be null, but must be an integer when not null.
-        - `co_quan_ban_hanh`: Must be a list, each item can be null, but must be a string when not null.
-        - `id_co_quan_ban_hanh`: Must be a list, each item can be null, but must be an integer when not null.
+        - `co_quan_ban_hanh`: Must be a list of strings.
+        - `id_co_quan_ban_hanh`: Must be a list of integers.
 
         Args:
             dtos (list[DocumentDto]): List of `DocumentDto` objects that need to be validated.
@@ -162,7 +162,7 @@ class DocumentValidator:
                 )
 
             for item in dto.co_quan_ban_hanh:
-                if item is not None and not isinstance(item, str):
+                if not isinstance(item, str):
                     raise ValidationError(
                         message="Invalid data type of an item in DocumentDto.co_quan_ban_hanh",
                         context={
@@ -181,7 +181,7 @@ class DocumentValidator:
                 )
 
             for item in dto.id_co_quan_ban_hanh:
-                if item is not None and not isinstance(item, int):
+                if not isinstance(item, int):
                     raise ValidationError(
                         message="Invalid data type of an item in DocumentDto.id_co_quan_ban_hanh",
                         context={
