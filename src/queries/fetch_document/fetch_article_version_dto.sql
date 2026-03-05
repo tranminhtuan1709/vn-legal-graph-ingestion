@@ -1,0 +1,55 @@
+WITH article_versions AS (
+    SELECT
+        core_noidungsuadoi.id AS version_id,
+        core_noidungsuadoi.vbplsd_id,
+        core_reviewdieuluat.vbpldsd_id,
+        core_noidungsuadoi.dieu AS dieu_sd,
+        core_reviewdieuluat.dieu AS dieu_dsd,
+        core_noidungsuadoi.phu_luc AS phu_luc_sd,
+        core_reviewdieuluat.phu_luc AS phu_luc_dsd,
+        core_reviewdieuluat.loai_vb,
+        core_noidungsuadoi.bai_bo_noi_dung_truoc,
+        core_noidungsuadoi.noi_dung_sua_doi
+    FROM core_reviewdieuluat
+    JOIN core_noidungsuadoi ON core_reviewdieuluat.id = core_noidungsuadoi.review_dieu_luat_id
+    WHERE core_reviewdieuluat.vbpldsd_id = %(document_id)s
+
+    UNION ALL
+
+    SELECT
+        core_noidungsuadoi.id AS version_id,
+        core_noidungsuadoi.vbplsd_id,
+        core_reviewdieuluat.vbpldsd_id,
+        core_noidungsuadoi.dieu AS dieu_sd,
+        core_reviewdieuluat.dieu AS dieu_dsd,
+        core_noidungsuadoi.phu_luc AS phu_luc_sd,
+        core_reviewdieuluat.phu_luc AS phu_luc_dsd,
+        core_reviewdieuluat.loai_vb,
+        core_noidungsuadoi.bai_bo_noi_dung_truoc,
+        core_noidungsuadoi.noi_dung_sua_doi
+    FROM core_reviewdieuluat
+    JOIN core_noidungsuadoi ON core_reviewdieuluat.id = core_noidungsuadoi.review_dieu_luat_id
+    WHERE core_noidungsuadoi.vbplsd_id = %(document_id)s
+)
+SELECT
+    article_versions.version_id,
+    article_versions.vbplsd_id,
+    article_versions.vbpldsd_id,
+    vs1.id AS dieu_sd_id,
+    vs2.id AS dieu_dsd_id,
+    article_versions.phu_luc_sd,
+    article_versions.phu_luc_dsd,
+    article_versions.loai_vb,
+    article_versions.bai_bo_noi_dung_truoc,
+    article_versions.noi_dung_sua_doi
+FROM article_versions
+JOIN vbpl_section AS vs1
+ON
+    article_versions.vbplsd_id = vs1.vbpl_id AND
+    NULLIF(article_versions.dieu_sd, '') COLLATE utf8mb4_general_ci <=> NULLIF(vs1.section_number, '') COLLATE utf8mb4_general_ci AND
+    NULLIF(article_versions.phu_luc_sd, '') COLLATE utf8mb4_general_ci <=> NULLIF(vs1.so_phu_luc, '') COLLATE utf8mb4_general_ci
+JOIN vbpl_section AS vs2
+ON
+    article_versions.vbpldsd_id = vs2.vbpl_id AND
+    NULLIF(article_versions.dieu_dsd, '') COLLATE utf8mb4_general_ci <=> NULLIF(vs2.section_number, '') COLLATE utf8mb4_general_ci AND
+    NULLIF(article_versions.phu_luc_dsd, '') COLLATE utf8mb4_general_ci <=> NULLIF(vs2.so_phu_luc, '') COLLATE utf8mb4_general_ci;

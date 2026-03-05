@@ -587,6 +587,7 @@ class DocumentValidator:
         - `dieu_dsd_id`: Must be an integer and not null
         - `phu_luc_sd`: Can be null, but must be a string when not null.
         - `phu_luc_dsd`: Can be null, but must be a string when not null.
+        - `loai_vb`: Must be a non-empty string.
         - `from_date`: Can be null, but must be a string in date format `yyyy-mm-dd` when not null.
         - `to_date`: Can be null, but must be a string in date format `yyyy-mm-dd` when not null.
         - `bai_bo_noi_dung_truoc`: Can be null, but must be a bool when not null.
@@ -651,6 +652,15 @@ class DocumentValidator:
                     context={
                         "expected_type": "str",
                         "invalid_type": type(dto.phu_luc_dsd)
+                    }
+                )
+
+            if not isinstance(dto.loai_vb, str) or dto.loai_vb in (None, ""):
+                raise ValidationError(
+                    message="Invalid value of ArticleVersionDto.loai_vb",
+                    context={
+                        "expected_value": "str",
+                        "invalid_value": dto.loai_vb
                     }
                 )
             

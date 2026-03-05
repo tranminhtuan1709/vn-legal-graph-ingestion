@@ -18,3 +18,7 @@ class BaseError(Exception):
 
 class ValidationError(BaseError):
     pass
+
+
+class InfrastructureError(BaseError):
+    pass

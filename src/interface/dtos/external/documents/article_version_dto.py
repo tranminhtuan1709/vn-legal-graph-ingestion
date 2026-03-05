@@ -8,6 +8,7 @@ class ArticleVersionDto:
         dieu_dsd_id: int,
         phu_luc_sd: str | None,
         phu_luc_dsd: str | None,
+        loai_vb: str,
         from_date: str | None,
         to_date: str | None,
         bai_bo_noi_dung_truoc: bool | None,
@@ -37,6 +38,7 @@ class ArticleVersionDto:
         self.dieu_dsd_id = dieu_dsd_id
         self.phu_luc_sd = phu_luc_sd
         self.phu_luc_dsd = phu_luc_dsd
+        self.loai_vb = loai_vb
         self.from_date = from_date
         self.to_date = to_date
         self.bai_bo_noi_dung_truoc = bai_bo_noi_dung_truoc

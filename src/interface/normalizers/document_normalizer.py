@@ -234,6 +234,7 @@ class DocumentNormalizer:
                     dieu_dsd_id=dto.dieu_dsd_id,
                     phu_luc_sd=dto.phu_luc_sd if dto.phu_luc_sd not in (None, "") else None,
                     phu_luc_dsd=dto.phu_luc_dsd if dto.phu_luc_dsd not in (None, "") else None,
+                    loai_vb=dto.loai_vb,
                     bai_bo_noi_dung_truoc=dto.bai_bo_noi_dung_truoc,
                     noi_dung_sua_doi=dto.noi_dung_sua_doi if dto.noi_dung_sua_doi not in (None, "") else None
                 )
