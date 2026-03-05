@@ -1,5 +1,8 @@
 import json
 
+from typing import Any
+from mysql.connector.abstracts import MySQLCursorAbstract
+
 from ..interface.dtos.external.documents.document_dto import DocumentDto
 from ..interface.dtos.external.documents.big_part_dto import BigPartDto
 from ..interface.dtos.external.documents.chapter_dto import ChapterDto
@@ -29,10 +32,8 @@ class DocumentRepository:
         self.document_validator = document_validator
         self.document_normalizer = document_normalizer
 
-    def fetch_document_dto(self, document_id: int) -> DocumentDto:
+    def fetch_document_dto(self, cursor: MySQLCursorAbstract, document_id: int) -> DocumentDto:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -101,10 +102,8 @@ class DocumentRepository:
                 }
             ) from e
 
-    def fetch_big_part_dtos(self, document_id: int) -> list[BigPartDto]:
+    def fetch_big_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[BigPartDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -154,10 +153,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_chapter_dtos(self, document_id: int) -> list[ChapterDto]:
+    def fetch_chapter_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ChapterDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -209,10 +206,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_part_dtos(self, document_id: int) -> list[PartDto]:
+    def fetch_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[PartDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -264,10 +259,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_mini_part_dtos(self, document_id: int) -> list[MiniPartDto]:
+    def fetch_mini_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[MiniPartDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -319,10 +312,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_article_dtos(self, document_id: int) -> list[ArticleDto]:
+    def fetch_article_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ArticleDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -386,10 +377,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_article_version_dtos(self, document_id: int) -> list[ArticleVersionDto]:
+    def fetch_article_version_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ArticleVersionDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     WITH article_versions AS (
@@ -505,10 +494,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_document_mapping_dtos(self, document_id: int) -> list[DocumentMappingDto]:
+    def fetch_document_mapping_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[DocumentMappingDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT
@@ -560,10 +547,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_document_type_dto(self, document_type_id: int) -> DocumentTypeDto:
+    def fetch_document_type_dto(self, cursor: MySQLCursorAbstract, document_type_id: int) -> DocumentTypeDto:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT id, loai_van_ban
@@ -595,9 +580,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_issuing_authority_dtos(self, issuing_authority_ids: list[int]) -> list[IssuingAuthorityDto]:
+    def fetch_issuing_authority_dtos(self, cursor: MySQLCursorAbstract, issuing_authority_ids: list[int]) -> list[IssuingAuthorityDto]:
         try:
-            _, cursor = self.mysql_client.get_connection()
             placeholders = ",".join(["%s"] * len(issuing_authority_ids))
 
             query = f"""
@@ -633,10 +617,8 @@ class DocumentRepository:
                 }
             ) from e
     
-    def fetch_sector_dto(self, sector_id: int) -> SectorDto:
+    def fetch_sector_dto(self, cursor: MySQLCursorAbstract, sector_id: int) -> SectorDto:
         try:
-            _, cursor = self.mysql_client.get_connection()
-
             cursor.execute(
                 operation="""
                     SELECT id, linh_vuc
@@ -667,3 +649,62 @@ class DocumentRepository:
                     "sector_id": sector_id
                 }
             ) from e
+    
+    def fetch_all(self, document_id: int) -> dict[
+        str,
+        DocumentDto | DocumentTypeDto | SectorDto | list[
+            BigPartDto,
+            ChapterDto,
+            PartDto,
+            MiniPartDto,
+            ArticleDto,
+            ArticleVersionDto,
+            DocumentMappingDto,
+            IssuingAuthorityDto
+        ]
+    ]:
+        try:
+            connection, cursor = self.mysql_client.get_connection()
+
+            document_dto = self.fetch_document_dto(cursor=cursor, document_id=document_id)
+            big_part_dtos = self.fetch_big_part_dtos(cursor=cursor, document_id=document_id)
+            chapter_dtos = self.fetch_chapter_dtos(cursor=cursor, document_id=document_id)
+            part_dtos = self.fetch_part_dtos(cursor=cursor, document_id=document_id)
+            mini_part_dtos = self.fetch_mini_part_dtos(cursor=cursor, document_id=document_id)
+            article_dtos = self.fetch_article_dtos(cursor=cursor, document_id=document_id)
+            article_version_dtos = self.fetch_article_version_dtos(cursor=cursor, document_id=document_id)
+            document_mapping_dtos = self.fetch_document_mapping_dtos(cursor=cursor, document_id=document_id)
+            
+            document_type_dto = self.fetch_document_type_dto(
+                cursor=cursor,
+                document_type_id=document_dto.id_loai_van_ban
+            )
+
+            issuing_authority_dtos = self.fetch_issuing_authority_dtos(
+                cursor=cursor,
+                issuing_authority_ids=document_dto.id_co_quan_ban_hanh
+            )
+
+            sector_dto = self.fetch_sector_dto(
+                cursor=cursor,
+                sector_id=document_dto.id_linh_vuc
+            )
+
+            return {
+                "document_dto": document_dto,
+                "big_part_dtos": big_part_dtos,
+                "chapter_dtos": chapter_dtos,
+                "part_dtos": part_dtos,
+                "mini_part_dtos": mini_part_dtos,
+                "article_dtos": article_dtos,
+                "article_version_dtos": article_version_dtos,
+                "document_mapping_dtos": document_mapping_dtos,
+                "document_type_dto": document_type_dto,
+                "issuing_authority_dtos": issuing_authority_dtos,
+                "sector_dto": sector_dto
+            }
+        except Exception as e:
+            raise FetchDocumentError(message="Failed to fetch document data") from e
+        finally:
+            cursor.close()
+            connection.close()
