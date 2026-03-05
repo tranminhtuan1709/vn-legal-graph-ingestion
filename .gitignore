@@ -3,5 +3,4 @@
 logs/
 venv/
 _pycache__/
-tests/
 .env

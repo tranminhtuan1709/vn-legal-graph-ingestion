@@ -22,3 +22,12 @@ class ValidationError(BaseError):
 
 class InfrastructureError(BaseError):
     pass
+
+class FetchDocumentError(BaseError):
+    pass
+
+class ProcessDocumentError(BaseError):
+    pass
+
+class NotFoundError(BaseError):
+    pass
