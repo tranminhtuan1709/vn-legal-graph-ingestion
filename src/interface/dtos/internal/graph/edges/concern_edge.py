@@ -1,6 +1,4 @@
-from src.interface.dtos.internal.graph.base_edge import BaseEdge
-
-
-class ConcernEdge(BaseEdge):
-    def __init__(self,) -> None:
-        pass
+class ConcernEdge:
+    def __init__(self, edge_type: str, created_at: str) -> None:
+        self.edge_type = edge_type
+        self.created_at = created_at

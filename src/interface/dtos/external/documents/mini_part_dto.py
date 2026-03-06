@@ -7,17 +7,6 @@ class MiniPartDto:
         mini_part_number: str | None,
         mini_part_name: str | None
     ) -> None:
-        """
-        Init MiniPartDto with provided attributes.
-
-        Args:
-            id (int): ID of the mini part.
-            vbpl_id (int): ID of the document which contains the mini part.
-            vbpl_part_id (int | None): ID of the part which contains the mini part.
-            mini_part_number (str | None): Number of the mini part.
-            mini_part_name (str | None): Name of the mini part.
-        """
-        
         self.id = id
         self.vbpl_id = vbpl_id
         self.vbpl_part_id = vbpl_part_id
