@@ -1,10 +1,4 @@
 class ContainEdge:
-    def __init__(self, created_at: str) -> None:
-        """
-        Init ContainEdge with provided attributes.
-
-        Args:
-            created_at (str): Timestamp when this edge is crrated. Datetime format: `yyyy-mm-dd hh:mm:ss`.
-        """
-        
+    def __init__(self, edge_type: str, created_at: str) -> None:
+        self.edge_type = edge_type
         self.created_at = created_at
