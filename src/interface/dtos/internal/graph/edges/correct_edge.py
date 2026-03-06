@@ -1,5 +1,6 @@
-class CorrectEdge:
-    def __init__(self, edge_type: str, created_at: str, document_mapping_id: int) -> None:
-        self.edge_type = edge_type
-        self.created_at = created_at
+from src.interface.dtos.internal.graph.base_edge import BaseEdge
+
+
+class CorrectEdge(BaseEdge):
+    def __init__(self, document_mapping_id: int) -> None:
         self.document_mapping_id = document_mapping_id

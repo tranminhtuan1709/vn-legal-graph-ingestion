@@ -1,9 +1,9 @@
-class ArticleNode:
+from src.interface.dtos.internal.graph.base_node import BaseNode
+
+
+class ArticleNode(BaseNode):
     def __init__(
         self,
-        node_id: str,
-        node_label: str,
-        created_at: str,
         article_id: int,
         article_number: str,
         article_name: str,
@@ -11,9 +11,6 @@ class ArticleNode:
         effective_date: str,
         appendix: str
     ) -> None:
-        self.node_label = node_label
-        self.node_id = node_id
-        self.created_at = created_at
         self.article_id = article_id
         self.article_number = article_number
         self.article_name = article_name
