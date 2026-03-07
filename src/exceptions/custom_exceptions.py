@@ -14,11 +14,26 @@ class ValidationError(BaseError):
 class InfrastructureError(BaseError):
     pass
 
+
 class FetchDataError(BaseError):
     pass
+
 
 class CreateSubgraphError(BaseError):
     pass
 
-class RebuildSubGraphError(BaseError):
+
+class CreateNodeError(BaseError):
+    pass
+
+
+class CreateEdgeError(BaseError):
+    pass
+
+
+class DetachSubgraphError(BaseError):
+    pass
+
+
+class RebuildSubgraphError(BaseError):
     pass
