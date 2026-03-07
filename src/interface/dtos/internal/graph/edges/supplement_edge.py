@@ -1,6 +1,7 @@
 class SupplementEdge:
-    def __init__(self, edge_type: str, created_at: str, version_id: int, from_date: str, to_date: str) -> None:
-        self.edge_type = edge_type
+    edge_type = "SUPPLEMENT"
+    
+    def __init__(self, created_at: str, version_id: int, from_date: str, to_date: str) -> None:
         self.created_at = created_at
         self.version_id = version_id
         self.from_date = from_date

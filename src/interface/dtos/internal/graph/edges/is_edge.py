@@ -1,4 +1,5 @@
 class IsEdge:
-    def __init__(self, edge_type: str, created_at: str) -> None:
-        self.edge_type = edge_type
+    edge_type = "IS"
+    
+    def __init__(self, created_at: str) -> None:
         self.created_at = created_at
