@@ -1,6 +1,11 @@
-class GuideEdge:
-    edge_type = "GUIDE"
-    
-    def __init__(self, created_at: str, document_mapping_id: int) -> None:
-        self.created_at = created_at
+from src.interface.dtos.internal.graph.edge import Edge
+
+
+class GuideEdge(Edge):    
+    def __init__(self, edge_type: str, created_at: str, document_mapping_id: int) -> None:
+        super().__init__(
+            edge_type=edge_type,
+            created_at=created_at
+        )
+        
         self.document_mapping_id = document_mapping_id
