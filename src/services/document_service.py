@@ -330,7 +330,7 @@ class DocumentService:
             edge_mapping = {
                 "huong_dan": (GuideEdge, "GUIDE"),
                 "thay_the": (ReplaceEdge, "REPLACE"),
-                "sua_doi": (AmendEdge, "AMEND", []),
+                "sua_doi": (AmendEdge, "AMEND"),
                 "dinh_chinh": (CorrectEdge, "CORRECT"),
                 "hop_nhat": (ConsolidateEdge, "CONSOLIDATE"),
             }
