@@ -1,7 +1,7 @@
 from neo4j import GraphDatabase, Session
 
-from ..exceptions.custom_exceptions import InfrastructureError
-from ..configs.neo4j_config import Neo4jConfig
+from src.exceptions.custom_exceptions import InfrastructureError
+from src.configs.neo4j_config import Neo4jConfig
 
 
 class Neo4jClient:

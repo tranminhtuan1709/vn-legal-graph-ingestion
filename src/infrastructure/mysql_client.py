@@ -1,8 +1,8 @@
 from mysql.connector import pooling
 from mysql.connector.abstracts import MySQLConnectionAbstract, MySQLCursorAbstract
 
-from ..exceptions.custom_exceptions import InfrastructureError
-from ..configs.mysql_config import MySQLConfig
+from src.exceptions.custom_exceptions import InfrastructureError
+from src.configs.mysql_config import MySQLConfig
 
 
 class MySQLClient:

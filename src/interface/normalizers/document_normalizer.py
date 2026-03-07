@@ -1,14 +1,14 @@
-from ..dtos.external.documents.document_dto import DocumentDto
-from ..dtos.external.documents.big_part_dto import BigPartDto
-from ..dtos.external.documents.chapter_dto import ChapterDto
-from ..dtos.external.documents.part_dto import PartDto
-from ..dtos.external.documents.mini_part_dto import MiniPartDto
-from ..dtos.external.documents.article_dto import ArticleDto
-from ..dtos.external.documents.article_version_dto import ArticleVersionDto
-from ..dtos.external.documents.document_mapping_dto import DocumentMappingDto
-from ..dtos.external.documents.document_type_dto import DocumentTypeDto
-from ..dtos.external.documents.issuing_authority_dto import IssuingAuthorityDto
-from ..dtos.external.documents.sector_dto import SectorDto
+from src.interface.dtos.external.document.document_dto import DocumentDto
+from src.interface.dtos.external.document.big_part_dto import BigPartDto
+from src.interface.dtos.external.document.chapter_dto import ChapterDto
+from src.interface.dtos.external.document.part_dto import PartDto
+from src.interface.dtos.external.document.mini_part_dto import MiniPartDto
+from src.interface.dtos.external.document.article_dto import ArticleDto
+from src.interface.dtos.external.document.article_version_dto import ArticleVersionDto
+from src.interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
+from src.interface.dtos.external.document.document_type_dto import DocumentTypeDto
+from src.interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
+from src.interface.dtos.external.document.sector_dto import SectorDto
 
 
 class DocumentNormalizer:
