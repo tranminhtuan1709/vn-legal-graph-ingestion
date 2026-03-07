@@ -1,20 +1,17 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 
 def check_valid_date(date_string: str, format: str) -> bool:
-    """
-    Check if a string is in specific date format.
-
-    Args:
-        date_string (str): A string to check.
-        format (str): Format to check.
-
-    Returns:
-        bool: True if `date_string` is in `format` format, else False.
-    """
-    
     try:
         datetime.strptime(date_string, format)
         return True
     except Exception:
         return False
+
+
+def get_current_timestamp() -> str:
+    timezone = ZoneInfo("Asia/Ho_Chi_Minh")
+    current_timestamp = datetime.now(timezone)
+
+    return current_timestamp.strftime("%Y-%m-%d %H:%M:%S")

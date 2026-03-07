@@ -7,16 +7,6 @@ from ..configs.mysql_config import MySQLConfig
 
 class MySQLClient:
     def __init__(self, config: MySQLConfig) -> None:
-        """
-        Init an instance of `MySQLClient` and create a connection pool.
-
-        Args:
-            config (MySQLConfig): An instance of `MySQLConfig`.
-
-        Raises:
-            InfrastructureError: When cannot create the MySQL connection pool.
-        """
-
         self.config = config
 
         try:
@@ -32,7 +22,7 @@ class MySQLClient:
             )
         except Exception as e:
             raise InfrastructureError(
-                message="Failed to create MySQL connection pool",
+                message="Failed to connect to MySQL",
                 context={
                     "host": self.config.host,
                     "port": self.config.port,
@@ -45,16 +35,6 @@ class MySQLClient:
             ) from e
 
     def get_connection(self) -> tuple[MySQLConnectionAbstract, MySQLCursorAbstract]:
-        """
-        Get a connection from the connection pool.
-
-        Raises:
-            InfrastructureError: When failed to get a connection.
-
-        Returns:
-            tuple[MySQLConnectionAbstract, MySQLCursorAbstract]: A connection and cursor.
-        """
-
         try:
             connection = self.connection_pool.get_connection()
             cursor = connection.cursor(dictionary=True)

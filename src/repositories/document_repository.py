@@ -1,24 +1,24 @@
 import json
 
-from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from ..interface.dtos.external.documents.document_dto import DocumentDto
-from ..interface.dtos.external.documents.big_part_dto import BigPartDto
-from ..interface.dtos.external.documents.chapter_dto import ChapterDto
-from ..interface.dtos.external.documents.part_dto import PartDto
-from ..interface.dtos.external.documents.mini_part_dto import MiniPartDto
-from ..interface.dtos.external.documents.article_dto import ArticleDto
-from ..interface.dtos.external.documents.article_version_dto import ArticleVersionDto
-from ..interface.dtos.external.documents.document_mapping_dto import DocumentMappingDto
-from ..interface.dtos.external.documents.document_type_dto import DocumentTypeDto
-from ..interface.dtos.external.documents.issuing_authority_dto import IssuingAuthorityDto
-from ..interface.dtos.external.documents.sector_dto import SectorDto
+from ..interface.dtos.external.document.document_dto import DocumentDto
+from ..interface.dtos.external.document.big_part_dto import BigPartDto
+from ..interface.dtos.external.document.chapter_dto import ChapterDto
+from ..interface.dtos.external.document.part_dto import PartDto
+from ..interface.dtos.external.document.mini_part_dto import MiniPartDto
+from ..interface.dtos.external.document.article_dto import ArticleDto
+from ..interface.dtos.external.document.article_version_dto import ArticleVersionDto
+from ..interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
+from ..interface.dtos.external.document.document_type_dto import DocumentTypeDto
+from ..interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
+from ..interface.dtos.external.document.sector_dto import SectorDto
 
 from ..infrastructure.mysql_client import MySQLClient
-from ..exceptions.custom_exceptions import FetchDocumentError
+from ..exceptions.custom_exceptions import FetchDataError
 from ..interface.validators.document_validator import DocumentValidator
 from ..interface.normalizers.document_normalizer import DocumentNormalizer
+from ..interface.dtos.internal.document.fetch_document_result import FetchDocumentResult
 
 
 class DocumentRepository:
@@ -93,11 +93,12 @@ class DocumentRepository:
 
             return self.document_normalizer.normalize_document_dto(dto=dto)
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch DocumentDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -144,11 +145,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch BigPartDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -197,11 +199,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch ChapterDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -250,11 +253,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch PartDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -303,11 +307,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch MiniPartDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -368,11 +373,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch ArticleDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -412,9 +418,9 @@ class DocumentRepository:
                             core_reviewdieuluat.phu_luc AS phu_luc_dsd,
                             core_reviewdieuluat.loai_vb,
                             core_noidungsuadoi.bai_bo_noi_dung_truoc,
-                            core_noidungsuadoi.noi_dung_sua_doi
-                            article_versions.from_date,
-                            article_versions.to_date
+                            core_noidungsuadoi.noi_dung_sua_doi,
+                            core_noidungsuadoi.from_date,
+                            core_noidungsuadoi.to_date
                         FROM core_reviewdieuluat
                         JOIN core_noidungsuadoi 
                         ON core_reviewdieuluat.id = core_noidungsuadoi.review_dieu_luat_id
@@ -485,11 +491,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch ArticleVersionDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -538,11 +545,12 @@ class DocumentRepository:
             
             return normalized_dtos
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch DocumentMappingDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_id": document_id
                 }
             ) from e
@@ -571,11 +579,12 @@ class DocumentRepository:
 
             return self.document_normalizer.normalize_document_type_dto(dto=dto)
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch DocumentTypeDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "document_type_id": document_type_id
                 }
             ) from e
@@ -608,11 +617,12 @@ class DocumentRepository:
 
             return self.document_normalizer.normalize_issuing_authority_dtos(dtos=dtos)
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch IssuingAuthorityDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "issuing_authority_ids": issuing_authority_ids
                 }
             ) from e
@@ -641,31 +651,20 @@ class DocumentRepository:
 
             return self.document_normalizer.normalize_sector_dto(dto=dto)
         except Exception as e:
-            raise FetchDocumentError(
+            raise FetchDataError(
                 message="Failed to fetch SectorDto",
                 context={
                     "host": self.mysql_client.config.host,
                     "database": self.mysql_client.config.database,
+                    "type": "document",
                     "sector_id": sector_id
                 }
             ) from e
     
-    def fetch_all(self, document_id: int) -> dict[
-        str,
-        DocumentDto | DocumentTypeDto | SectorDto | list[
-            BigPartDto,
-            ChapterDto,
-            PartDto,
-            MiniPartDto,
-            ArticleDto,
-            ArticleVersionDto,
-            DocumentMappingDto,
-            IssuingAuthorityDto
-        ]
-    ]:
+    def fetch_all(self, document_id: int) -> FetchDocumentResult:
+        connection, cursor = self.mysql_client.get_connection()
+        
         try:
-            connection, cursor = self.mysql_client.get_connection()
-
             document_dto = self.fetch_document_dto(cursor=cursor, document_id=document_id)
             big_part_dtos = self.fetch_big_part_dtos(cursor=cursor, document_id=document_id)
             chapter_dtos = self.fetch_chapter_dtos(cursor=cursor, document_id=document_id)
@@ -690,21 +689,21 @@ class DocumentRepository:
                 sector_id=document_dto.id_linh_vuc
             )
 
-            return {
-                "document_dto": document_dto,
-                "big_part_dtos": big_part_dtos,
-                "chapter_dtos": chapter_dtos,
-                "part_dtos": part_dtos,
-                "mini_part_dtos": mini_part_dtos,
-                "article_dtos": article_dtos,
-                "article_version_dtos": article_version_dtos,
-                "document_mapping_dtos": document_mapping_dtos,
-                "document_type_dto": document_type_dto,
-                "issuing_authority_dtos": issuing_authority_dtos,
-                "sector_dto": sector_dto
-            }
+            return FetchDocumentResult(
+                document_dto=document_dto,
+                big_part_dtos=big_part_dtos,
+                chapter_dtos=chapter_dtos,
+                part_dtos=part_dtos,
+                mini_part_dtos=mini_part_dtos,
+                article_dtos=article_dtos,
+                article_version_dtos=article_version_dtos,
+                document_mapping_dtos=document_mapping_dtos,
+                document_type_dto=document_type_dto,
+                issuing_authority_dtos=issuing_authority_dtos,
+                sector_dto=sector_dto
+            )
         except Exception as e:
-            raise FetchDocumentError(message="Failed to fetch document data") from e
+            raise FetchDataError(message="Failed to fetch document data") from e
         finally:
             cursor.close()
             connection.close()
