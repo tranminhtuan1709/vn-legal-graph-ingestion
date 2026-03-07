@@ -473,6 +473,24 @@ class DocumentValidator:
                     "invalid_value": dto.vbpldsd_id
                 }
             )
+
+        if dto.dieu_sd in ("", None) or not isinstance(dto.dieu_sd, str):
+            raise ValidationError(
+                message="Invalid value of ArticleVersionDto.dieu_sd",
+                context={
+                    "expected_value": "str",
+                    "invalid_value": dto.dieu_sd
+                }
+            )
+
+        if dto.dieu_dsd in ("", None) or not isinstance(dto.dieu_dsd, str):
+            raise ValidationError(
+                message="Invalid value of ArticleVersionDto.dieu_dsd",
+                context={
+                    "expected_value": "str",
+                    "invalid_value": dto.dieu_dsd
+                }
+            )
         
         if dto.dieu_sd_id is None or not isinstance(dto.dieu_sd_id, int):
             raise ValidationError(
@@ -501,7 +519,7 @@ class DocumentValidator:
                 }
             )
 
-        if not isinstance(dto.loai_vb, str) or dto.loai_vb in (None, ""):
+        if not isinstance(dto.loai_vb, str) or dto.loai_vb in (None, "") or dto.loai_vb not in ("SĐ", "BS", "NHL"):
             raise ValidationError(
                 message="Invalid value of ArticleVersionDto.loai_vb",
                 context={
@@ -592,7 +610,10 @@ class DocumentValidator:
                 }
             )
         
-        if dto.relationship_type is None or not isinstance(dto.relationship_type, str):
+        if (dto.relationship_type is None or
+            not isinstance(dto.relationship_type, str) or
+            dto.relationship_type not in ("huong_dan", "sua_doi", "thay_the", "dinh_chinh", "hop_nhat")
+        ):
             raise ValidationError(
                 message="Invalid value of DocumentMappingDto.relationship_type",
                 context={

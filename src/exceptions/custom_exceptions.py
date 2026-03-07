@@ -37,3 +37,7 @@ class DetachSubgraphError(BaseError):
 
 class RebuildSubgraphError(BaseError):
     pass
+
+
+class IngestionError(BaseError):
+    pass

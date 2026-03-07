@@ -89,6 +89,8 @@ class DocumentNormalizer:
             version_id=dto.version_id,
             vbplsd_id=dto.vbplsd_id,
             vbpldsd_id=dto.vbpldsd_id,
+            dieu_sd=dto.dieu_sd,
+            dieu_dsd=dto.dieu_dsd,
             dieu_sd_id=dto.dieu_sd_id,
             dieu_dsd_id=dto.dieu_dsd_id,
             phu_luc_sd=dto.phu_luc_sd if dto.phu_luc_sd not in (None, "") else None,

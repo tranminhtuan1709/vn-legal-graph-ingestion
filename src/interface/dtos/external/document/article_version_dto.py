@@ -4,6 +4,8 @@ class ArticleVersionDto:
         version_id: int,
         vbplsd_id: int,
         vbpldsd_id: int,
+        dieu_sd: str,
+        dieu_dsd: str,
         dieu_sd_id: int,
         dieu_dsd_id: int,
         phu_luc_sd: str | None,
@@ -17,6 +19,8 @@ class ArticleVersionDto:
         self.version_id = version_id
         self.vbplsd_id = vbplsd_id
         self.vbpldsd_id = vbpldsd_id
+        self.dieu_sd = dieu_sd
+        self.dieu_dsd = dieu_dsd
         self.dieu_sd_id = dieu_sd_id
         self.dieu_dsd_id = dieu_dsd_id
         self.phu_luc_sd = phu_luc_sd
