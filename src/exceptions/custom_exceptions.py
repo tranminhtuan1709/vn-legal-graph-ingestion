@@ -1,43 +1,43 @@
 from typing import Any
 
 
-class BaseError(Exception):
+class CustomBaseError(Exception):
     def __init__(self, message: str, context: dict[str, Any] | None) -> None:
         super().__init__(message)
         self.context = context
 
 
-class ValidationError(BaseError):
+class ValidationError(CustomBaseError):
     pass
 
 
-class InfrastructureError(BaseError):
+class InfrastructureError(CustomBaseError):
     pass
 
 
-class FetchDataError(BaseError):
+class FetchDataError(CustomBaseError):
     pass
 
 
-class CreateSubgraphError(BaseError):
+class CreateSubgraphError(CustomBaseError):
     pass
 
 
-class CreateNodeError(BaseError):
+class CreateNodeError(CustomBaseError):
     pass
 
 
-class CreateEdgeError(BaseError):
+class CreateEdgeError(CustomBaseError):
     pass
 
 
-class DetachSubgraphError(BaseError):
+class DetachSubgraphError(CustomBaseError):
     pass
 
 
-class RebuildSubgraphError(BaseError):
+class RebuildSubgraphError(CustomBaseError):
     pass
 
 
-class IngestionError(BaseError):
+class IngestionError(CustomBaseError):
     pass

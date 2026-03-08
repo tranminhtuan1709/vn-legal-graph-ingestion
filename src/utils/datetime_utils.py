@@ -10,6 +10,14 @@ def check_valid_date(date_string: str, format: str) -> bool:
         return False
 
 
+def check_valid_datetime(datetime_string: str, format: str) -> bool:
+    try:
+        datetime.strptime(datetime_string, format)
+        return True
+    except Exception:
+        return False
+
+
 def get_current_timestamp() -> str:
     timezone = ZoneInfo("Asia/Ho_Chi_Minh")
     current_timestamp = datetime.now(timezone)
