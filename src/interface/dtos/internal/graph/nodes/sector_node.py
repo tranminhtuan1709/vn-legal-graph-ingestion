@@ -1,4 +1,4 @@
-from src.interface.dtos.internal.graph.node import Node
+from interface.dtos.internal.graph.node import Node
 
 
 class SectorNode(Node):

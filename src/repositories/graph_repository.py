@@ -1,13 +1,10 @@
-from src.interface.dtos.internal.graph.node import Node
-from src.interface.dtos.internal.graph.triple import Triple
-from src.infrastructure.neo4j_client import Neo4jClient
+import time
 
-from src.exceptions.custom_exceptions import (
-    InfrastructureError,
-    CreateNodeError,
-    CreateEdgeError,
-    DetachSubgraphError
-)
+from interface.dtos.internal.graph.node import Node
+from interface.dtos.internal.graph.triple import Triple
+from infrastructure.neo4j_client import Neo4jClient
+
+from utils.logger import logger
 
 
 class GraphRepository:
@@ -15,17 +12,15 @@ class GraphRepository:
         self.neo4j_client = neo4j_client
     
     def create_nodes(self, nodes: list[Node]) -> None:
-        if nodes == []:
-            return
-        
-        session = self.neo4j_client.get_session()
+        start_time = time.time()
 
         try:
+            if nodes == []:
+                return
+            
+            session = self.neo4j_client.get_session()
             transaction = session.begin_transaction()
-        except Exception as e:
-            raise InfrastructureError(message="Failed to create transaction from a Neo4j session") from e
 
-        try:
             node_groups: dict[str, list[Node]] = {}
 
             for node in nodes:
@@ -49,25 +44,24 @@ class GraphRepository:
                 )
 
             transaction.commit() 
-        except Exception as e:
+        except Exception:
             transaction.rollback()
-            raise CreateNodeError(message="Failed to create nodes") from e
+            raise
         finally:
             transaction.close()
             session.close()
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def create_edges(self, triples: list[Triple]) -> None:
-        if triples == []:
-            return
+        start_time = time.time()
         
-        session = self.neo4j_client.get_session()
-
         try:
+            if triples == []:
+                return
+            
+            session = self.neo4j_client.get_session()
             transaction = session.begin_transaction()
-        except Exception as e:
-            raise InfrastructureError(message="Failed to create transaction from a Neo4j session") from e
-        
-        try:
+
             edge_groups: dict[str, list[Triple]] = {}
 
             for triple in triples:
@@ -101,22 +95,21 @@ class GraphRepository:
                     }
                 )
             transaction.commit()
-        except Exception as e:
+        except Exception:
             transaction.rollback()
-            raise CreateEdgeError(message="Failed to create edges") from e
+            raise
         finally:
             transaction.close()
             session.close()
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def detach_document_subgraph(self, node_id: str) -> None:
-        session = self.neo4j_client.get_session()
+        start_time = time.time()
 
         try:
+            session = self.neo4j_client.get_session()
             transaction = session.begin_transaction()
-        except Exception as e:
-            raise InfrastructureError(message="Failed to create transaction from a Neo4j session") from e
         
-        try:
             transaction.run(
                 query="""
                     MATCH (root:Document {node_id: $node_id})
@@ -132,13 +125,8 @@ class GraphRepository:
             transaction.commit()
         except Exception as e:
             transaction.rollback()
-
-            raise DetachSubgraphError(
-                message=f"Failed to detach a document subgraph",
-                context={
-                    "document_id": node_id
-                }
-            ) from e
+            raise
         finally:
             transaction.close()
             session.close()
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")

@@ -1,9 +1,10 @@
 import logging
 import logging.handlers
-from logging import LogRecord, Logger, Formatter
 import os
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from logging import LogRecord, Formatter
+from dotenv import load_dotenv
 
 VN_TZ = ZoneInfo("Asia/Ho_Chi_Minh")
 
@@ -33,24 +34,26 @@ class CustomFormatter(Formatter):
         return log
 
 
-def get_logger(name: str, log_file: str, max_bytes: int, backup_count: int, level: int) -> Logger:
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+log_level_mapping = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warn": logging.WARN,
+    "error": logging.ERROR
+}
 
-    if not logger.handlers:
-        logger.addHandler(handler)
+load_dotenv(dotenv_path="../.env")
+logger = logging.getLogger(os.getenv("LOG_NAME"))
+logger.setLevel(log_level_mapping.get(os.getenv("LOG_LEVEL")))
 
-    os.makedirs(os.path.dirname(log_file), exist_ok=True)
+handler = logging.handlers.RotatingFileHandler(
+    filename=f"../logs/{os.getenv("LOG_FILE")}",
+    maxBytes=int(os.getenv("LOG_MAX_BYTES")),
+    backupCount=int(os.getenv("LOG_BACKUP_COUNT")),
+    encoding="utf-8",
+)
 
-    handler = logging.handlers.RotatingFileHandler(
-        log_file,
-        maxBytes=max_bytes,
-        backupCount=backup_count,
-        encoding="utf-8",
-    )
+formatter = CustomFormatter()
+handler.setFormatter(formatter)
 
-    formatter = CustomFormatter()
-    handler.setFormatter(formatter)
+if not logger.handlers:
     logger.addHandler(handler)
-
-    return logger

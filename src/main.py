@@ -1,28 +1,26 @@
 import json
 import os
-import logging
 from dotenv import load_dotenv
+from typing import Any
 
-from src.configs.kafka_config import KafkaConfig
-from src.configs.mysql_config import MySQLConfig
-from src.configs.neo4j_config import Neo4jConfig
+from configs.kafka_config import KafkaConfig
+from configs.mysql_config import MySQLConfig
+from configs.neo4j_config import Neo4jConfig
 
-from src.infrastructure.kafka_client import KafkaClient
-from src.infrastructure.mysql_client import MySQLClient
-from src.infrastructure.neo4j_client import Neo4jClient
+from infrastructure.kafka_client import KafkaClient
+from infrastructure.mysql_client import MySQLClient
+from infrastructure.neo4j_client import Neo4jClient
 
-from src.interface.validators.document_validator import DocumentValidator
-from src.interface.normalizers.document_normalizer import DocumentNormalizer
+from interface.validators.document_validator import DocumentValidator
+from interface.normalizers.document_normalizer import DocumentNormalizer
 
-from src.repositories.document_repository import DocumentRepository
-from src.repositories.graph_repository import GraphRepository
+from repositories.document_repository import DocumentRepository
+from repositories.graph_repository import GraphRepository
 
-from src.services.document_service import DocumentService
+from services.document_service import DocumentService
+from utils.logger import logger
 
-from src.utils.logger import get_logger
-from src.exceptions.custom_exceptions import CustomBaseError
-
-load_dotenv(dotenv_path="/.env")
+load_dotenv(dotenv_path="./.env")
 
 kafka_config = KafkaConfig(
     host=os.getenv("KAFKA_HOST"),
@@ -80,46 +78,30 @@ document_service = DocumentService(
     uuid_namespace=os.getenv("UUID_NAMESPACE")
 )
 
-kafka_consumer = kafka_client.get_consumer()
-
-log_level_mapping = {
-    "debug": logging.DEBUG,
-    "info": logging.INFO,
-    "warn": logging.WARN,
-    "error": logging.ERROR
-}
-
-logger = get_logger(
-    name=os.getenv("LOG_NAME"),
-    log_file=os.getenv("LOG_FILE"),
-    max_bytes=int(os.getenv("LOG_MAX_BYTES")),
-    backup_count=int(os.getenv("LOG_BACKUP_COUNT")),
-    level=log_level_mapping.get(os.getenv("LOG_LEVEL"))
-)
+logger.info("Consumer started")
 
 while True:
-    for topic in kafka_config.topics:
-        try:
-            message = kafka_consumer.poll(timeout=1.0)
+    try:
+        message = kafka_client.consumer.poll(timeout=1.0)
 
-            if message is None:
-                logger.info(msg=f"Ignore a null message from topic {topic}")
-            
-            message_value: dict[str, any] = json.loads(message.value().decode(encoding="utf-8"))
-            logger.info(msg=json.dumps(message_value))
+        if message is None or message.value() is None:
+            continue
+        
+        if message.error():
+            raise
+        
+        topic = message.topic()
+        logger.info(msg=f"Received a message from topic {topic}: {message.value()}")
+        message_value: dict[str, Any] = json.loads(message.value().decode())
 
-            if topic == "approved_document_ids":
-                document_service.ingest_document(document_id=message_value.get("document_id"))
-        except CustomBaseError as e:
-            logger.error(
-                msg=str(e),
-                exc_info=True,
-                extra={
-                    "context": e.context
-                }
-            )
-        except Exception as e:
-            logger.error(
-                msg=f"An unexpected error occured while processing message from topic {topic}",
-                exc_info=True
-            )
+        if topic == "approved_documents":
+            document_id: int = message_value.get("document_id")
+            document_service.ingest_document(document_id=document_id)
+            logger.info(msg=f"Ingested document ID: {document_id}")
+            logger.info(msg=f"\n\n{'=' * 100}\n\n")
+    except Exception as e:
+        logger.error(msg=f"Failed to ingest", exc_info=True)
+        logger.info(msg=f"\n\n\n{'=' * 100}\n\n\n")
+        break
+    finally:
+        kafka_client.consumer.commit()

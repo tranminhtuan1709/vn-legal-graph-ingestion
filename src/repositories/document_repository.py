@@ -1,24 +1,25 @@
 import json
-
+import time
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from src.interface.dtos.external.document.document_dto import DocumentDto
-from src.interface.dtos.external.document.big_part_dto import BigPartDto
-from src.interface.dtos.external.document.chapter_dto import ChapterDto
-from src.interface.dtos.external.document.part_dto import PartDto
-from src.interface.dtos.external.document.mini_part_dto import MiniPartDto
-from src.interface.dtos.external.document.article_dto import ArticleDto
-from src.interface.dtos.external.document.article_version_dto import ArticleVersionDto
-from src.interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
-from src.interface.dtos.external.document.document_type_dto import DocumentTypeDto
-from src.interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
-from src.interface.dtos.external.document.sector_dto import SectorDto
+from interface.dtos.external.document.document_dto import DocumentDto
+from interface.dtos.external.document.big_part_dto import BigPartDto
+from interface.dtos.external.document.chapter_dto import ChapterDto
+from interface.dtos.external.document.part_dto import PartDto
+from interface.dtos.external.document.mini_part_dto import MiniPartDto
+from interface.dtos.external.document.article_dto import ArticleDto
+from interface.dtos.external.document.article_version_dto import ArticleVersionDto
+from interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
+from interface.dtos.external.document.document_type_dto import DocumentTypeDto
+from interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
+from interface.dtos.external.document.sector_dto import SectorDto
 
-from src.infrastructure.mysql_client import MySQLClient
-from src.exceptions.custom_exceptions import FetchDataError
-from src.interface.validators.document_validator import DocumentValidator
-from src.interface.normalizers.document_normalizer import DocumentNormalizer
-from src.interface.dtos.internal.document.fetch_document_result import FetchDocumentResult
+from infrastructure.mysql_client import MySQLClient
+from interface.validators.document_validator import DocumentValidator
+from interface.normalizers.document_normalizer import DocumentNormalizer
+from interface.dtos.internal.document.fetch_document_result import FetchDocumentResult
+
+from utils.logger import logger
 
 
 class DocumentRepository:
@@ -33,23 +34,25 @@ class DocumentRepository:
         self.document_normalizer = document_normalizer
 
     def fetch_document_dto(self, cursor: MySQLCursorAbstract, document_id: int) -> DocumentDto:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
                     SELECT
                         id,
-                        so_ky_hieu,
-                        ten_hien_thi,
-                        DATE(ngay_ban_hanh) AS ngay_ban_hanh,
-                        DATE(ngay_co_hieu_luc) AS ngay_co_hieu_luc,
-                        DATE(ngay_het_han) AS ngay_het_han,
-                        trang_thai,
-                        chu_thich_nho,
-                        loai_van_ban,
+                        NULLIF(so_ky_hieu, '') AS so_ky_hieu,
+                        NULLIF(ten_hien_thi, '') AS ten_hien_thi,
+                        DATE_FORMAT(ngay_ban_hanh, '%Y-%m-%d') AS ngay_ban_hanh,
+                        DATE_FORMAT(ngay_co_hieu_luc, '%Y-%m-%d') AS ngay_co_hieu_luc,
+                        DATE_FORMAT(ngay_het_han, '%Y-%m-%d') AS ngay_het_han,
+                        NULLIF(trang_thai, '') AS trang_thai,
+                        NULLIF(chu_thich_nho, '') AS chu_thich_nho,
+                        NULLIF(loai_van_ban, '') AS loai_van_ban,
                         id_loai_van_ban,
-                        linh_vuc,
+                        NULLIF(linh_vuc, '') AS linh_vuc,
                         id_linh_vuc,
-                        co_quan_ban_hanh,
+                        NULLIF(co_quan_ban_hanh, '') AS co_quan_ban_hanh,
                         id_co_quan_ban_hanh
                     FROM vbpl
                     WHERE id = %(document_id)s;
@@ -78,7 +81,7 @@ class DocumentRepository:
                 id_co_quan_ban_hanh=record.get("id_co_quan_ban_hanh"),
             )
 
-            if dto.co_quan_ban_hanh in (None, ""):
+            if dto.co_quan_ban_hanh is None:
                 dto.co_quan_ban_hanh = []
             else:
                 dto.co_quan_ban_hanh = dto.co_quan_ban_hanh.split(",")
@@ -88,30 +91,25 @@ class DocumentRepository:
             else:
                 dto.id_co_quan_ban_hanh = json.loads(dto.id_co_quan_ban_hanh)
                 
-
-            self.document_validator.validate_document_dtos(dto=dto)
+            self.document_validator.validate_document_dto(dto=dto)
 
             return self.document_normalizer.normalize_document_dto(dto=dto)
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch DocumentDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
 
     def fetch_big_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[BigPartDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
                     SELECT
                         id,
                         vbpl_id,
-                        big_part_number,
-                        big_part_name
+                        NULLIF(big_part_number, '') AS big_part_number,
+                        NULLIF(big_part_name, '') AS big_part_name
                     FROM vbpl_big_part
                     WHERE vbpl_id = %(document_id)s
                 """,
@@ -144,18 +142,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch BigPartDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_chapter_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ChapterDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -163,8 +157,8 @@ class DocumentRepository:
                         id,
                         vbpl_id,
                         vbpl_big_part_id,
-                        chapter_number,
-                        chapter_name
+                        NULLIF(chapter_number, '') AS chapter_number,
+                        NULLIF(chapter_name, '') AS chapter_name
                     FROM vbpl_chapter
                     WHERE vbpl_id = %(document_id)s
                 """,
@@ -198,18 +192,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch ChapterDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[PartDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -217,8 +207,8 @@ class DocumentRepository:
                         id,
                         vbpl_id,
                         vbpl_chapter_id,
-                        part_number,
-                        part_name
+                        NULLIF(part_number, '') AS part_number,
+                        NULLIF(part_name, '') AS part_name
                     FROM vbpl_part
                     WHERE vbpl_id = %(document_id)s
                 """,
@@ -252,18 +242,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch PartDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_mini_part_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[MiniPartDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -271,8 +257,8 @@ class DocumentRepository:
                         id,
                         vbpl_id,
                         vbpl_part_id,
-                        mini_part_number,
-                        mini_part_name
+                        NULLIF(mini_part_number, '') AS mini_part_number,
+                        NULLIF(mini_part_name, '') AS mini_part_name
                     FROM vbpl_mini_part
                     WHERE vbpl_id = %(document_id)s
                 """,
@@ -306,18 +292,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch MiniPartDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_article_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ArticleDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -328,11 +310,11 @@ class DocumentRepository:
                         vbpl_chapter_id,
                         vbpl_part_id,
                         vbpl_mini_part_id,
-                        section_number,
-                        section_name,
-                        section_content,
-                        so_phu_luc,
-                        effective_date
+                        NULLIF(section_number, '') AS section_number,
+                        NULLIF(section_name, '') AS section_name,
+                        NULLIF(section_content, '') AS section_content,
+                        NULLIF(so_phu_luc, '') AS so_phu_luc,
+                        DATE_FORMAT(effective_date, '%Y-%m-%d') AS effective_date
                     FROM vbpl_section
                     WHERE vbpl_id = %(document_id)s
                 """,
@@ -372,18 +354,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch ArticleDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_article_version_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[ArticleVersionDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -404,10 +382,7 @@ class DocumentRepository:
                     FROM core_reviewdieuluat
                     JOIN core_noidungsuadoi 
                     ON core_reviewdieuluat.id = core_noidungsuadoi.review_dieu_luat_id
-                    WHERE
-                        core_reviewdieuluat.vbpldsd_id = %(document_id)s AND
-                        core_reviewdieuluat.dieu IS NOT NULL AND
-                        core_reviewdieuluat.dieu <> ''
+                    WHERE core_reviewdieuluat.vbpldsd_id = %(document_id)s
 
                     UNION ALL
 
@@ -427,39 +402,36 @@ class DocumentRepository:
                     FROM core_reviewdieuluat
                     JOIN core_noidungsuadoi 
                     ON core_reviewdieuluat.id = core_noidungsuadoi.review_dieu_luat_id
-                    WHERE
-                        core_noidungsuadoi.vbplsd_id = %(document_id)s AND
-                        core_noidungsuadoi.dieu IS NOT NULL AND
-                        core_noidungsuadoi.dieu <> ''
+                    WHERE core_noidungsuadoi.vbplsd_id = %(document_id)s
                 )
                 SELECT
                     article_versions.version_id,
                     article_versions.vbplsd_id,
                     article_versions.vbpldsd_id,
-                    article_versions.dieu_sd,
-                    article_versions.dieu_dsd,
+                    NULLIF(article_versions.dieu_sd, '') AS dieu_sd,
+                    NULLIF(article_versions.dieu_dsd, '') AS dieu_dsd,
                     vs1.id AS dieu_sd_id,
                     vs2.id AS dieu_dsd_id,
-                    article_versions.phu_luc_sd,
-                    article_versions.phu_luc_dsd,
+                    NULLIF(article_versions.phu_luc_sd, '') AS phu_luc_sd,
+                    NULLIF(article_versions.phu_luc_dsd, '') AS phu_luc_dsd,
                     article_versions.loai_vb,
-                    article_versions.from_date,
-                    article_versions.to_date,
+                    DATE_FORMAT(article_versions.from_date, '%Y-%m-%d') AS from_date,
+                    DATE_FORMAT(article_versions.to_date, '%Y-%m-%d') AS to_date,
                     article_versions.bai_bo_noi_dung_truoc,
-                    article_versions.noi_dung_sua_doi
+                    NULLIF(article_versions.noi_dung_sua_doi, '') AS noi_dung_sua_doi
                 FROM article_versions
                 JOIN vbpl_section AS vs1
                 ON
                     article_versions.vbplsd_id = vs1.vbpl_id AND
-                    article_versions.dieu_sd COLLATE utf8mb4_general_ci
-                        = vs1.section_number COLLATE utf8mb4_general_ci AND
+                    NULLIF(article_versions.dieu_sd, '') COLLATE utf8mb4_general_ci
+                        <=> NULLIF(vs1.section_number, '') COLLATE utf8mb4_general_ci AND
                     NULLIF(article_versions.phu_luc_sd, '') COLLATE utf8mb4_general_ci 
                         <=> NULLIF(vs1.so_phu_luc, '') COLLATE utf8mb4_general_ci
                 JOIN vbpl_section AS vs2
                 ON
                     article_versions.vbpldsd_id = vs2.vbpl_id AND
-                    article_versions.dieu_dsd COLLATE utf8mb4_general_ci 
-                        = vs2.section_number COLLATE utf8mb4_general_ci AND
+                    NULLIF(article_versions.dieu_dsd, '') COLLATE utf8mb4_general_ci 
+                        = NULLIF(vs2.section_number, '') COLLATE utf8mb4_general_ci AND
                     NULLIF(article_versions.phu_luc_dsd, '') COLLATE utf8mb4_general_ci 
                         <=> NULLIF(vs2.so_phu_luc, '') COLLATE utf8mb4_general_ci
                 """,
@@ -477,6 +449,8 @@ class DocumentRepository:
                         version_id=record.get("version_id"),
                         vbplsd_id=record.get("vbplsd_id"),
                         vbpldsd_id=record.get("vbpldsd_id"),
+                        dieu_sd=record.get("dieu_sd"),
+                        dieu_dsd=record.get("dieu_dsd"),
                         dieu_sd_id=record.get("dieu_sd_id"),
                         dieu_dsd_id=record.get("dieu_dsd_id"),
                         phu_luc_sd=record.get("phu_luc_sd"),
@@ -484,13 +458,13 @@ class DocumentRepository:
                         loai_vb=record.get("loai_vb"),
                         from_date=record.get("from_date"),
                         to_date=record.get("to_date"),
-                        bai_bo_noi_dung_truoc=record.get("bai_bo_noi_dung_truoc"),
+                        bai_bo_noi_dung_truoc=bool(record.get("bai_bo_noi_dung_truoc")),
                         noi_dung_sua_doi=record.get("noi_dung_sua_doi")
                     )
                 )
 
             for dto in dtos:
-                self.document_validator.validate_chapter_dto(dto=dto)
+                self.document_validator.validate_article_version_dto(dto=dto)
             
             normalized_dtos = []
 
@@ -500,18 +474,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch ArticleVersionDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_document_mapping_dtos(self, cursor: MySQLCursorAbstract, document_id: int) -> list[DocumentMappingDto]:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -554,18 +524,14 @@ class DocumentRepository:
                 )
             
             return normalized_dtos
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch DocumentMappingDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_id": document_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_document_type_dto(self, cursor: MySQLCursorAbstract, document_type_id: int) -> DocumentTypeDto:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -588,18 +554,18 @@ class DocumentRepository:
             self.document_validator.validate_document_type_dto(dto=dto)
 
             return self.document_normalizer.normalize_document_type_dto(dto=dto)
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch DocumentTypeDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "document_type_id": document_type_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
-    def fetch_issuing_authority_dtos(self, cursor: MySQLCursorAbstract, issuing_authority_ids: list[int]) -> list[IssuingAuthorityDto]:
+    def fetch_issuing_authority_dtos(
+        self,
+        cursor: MySQLCursorAbstract,
+        issuing_authority_ids: list[int]
+    ) -> list[IssuingAuthorityDto]:
+        start_time = time.time()
+
         try:
             placeholders = ",".join(["%s"] * len(issuing_authority_ids))
 
@@ -623,21 +589,25 @@ class DocumentRepository:
                     )
                 )
 
-            self.document_validator.validate_issuing_authority_dtos(dtos=dtos)
+            for dto in dtos:
+                self.document_validator.validate_issuing_authority_dto(dto=dto)
 
-            return self.document_normalizer.normalize_issuing_authority_dtos(dtos=dtos)
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch IssuingAuthorityDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "issuing_authority_ids": issuing_authority_ids
-                }
-            ) from e
+            normalized_dtos = []
+
+            for dto in dtos:
+                normalized_dtos.append(
+                    self.document_normalizer.normalize_issuing_authority_dto(dto=dto)
+                )
+            
+            return normalized_dtos
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_sector_dto(self, cursor: MySQLCursorAbstract, sector_id: int) -> SectorDto:
+        start_time = time.time()
+
         try:
             cursor.execute(
                 operation="""
@@ -660,21 +630,17 @@ class DocumentRepository:
             self.document_validator.validate_sector_dto(dto=dto)
 
             return self.document_normalizer.normalize_sector_dto(dto=dto)
-        except Exception as e:
-            raise FetchDataError(
-                message="Failed to fetch SectorDto",
-                context={
-                    "host": self.mysql_client.config.host,
-                    "database": self.mysql_client.config.database,
-                    "type": "document",
-                    "sector_id": sector_id
-                }
-            ) from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")
     
     def fetch_all(self, document_id: int) -> FetchDocumentResult:
-        connection, cursor = self.mysql_client.get_connection()
+        start_time = time.time()
         
         try:
+            connection, cursor = self.mysql_client.get_connection()
+
             document_dto = self.fetch_document_dto(cursor=cursor, document_id=document_id)
             big_part_dtos = self.fetch_big_part_dtos(cursor=cursor, document_id=document_id)
             chapter_dtos = self.fetch_chapter_dtos(cursor=cursor, document_id=document_id)
@@ -712,8 +678,9 @@ class DocumentRepository:
                 issuing_authority_dtos=issuing_authority_dtos,
                 sector_dto=sector_dto
             )
-        except Exception as e:
-            raise FetchDataError(message="Failed to fetch document data") from e
+        except Exception:
+            raise
         finally:
             cursor.close()
             connection.close()
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")

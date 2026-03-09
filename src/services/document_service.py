@@ -1,35 +1,36 @@
 import uuid
+import time
 
-from src.repositories.document_repository import DocumentRepository
-from src.repositories.graph_repository import GraphRepository
-from src.exceptions.custom_exceptions import IngestionError
-from src.interface.dtos.internal.graph.triple import Triple
+from repositories.document_repository import DocumentRepository
+from repositories.graph_repository import GraphRepository
+from interface.dtos.internal.graph.triple import Triple
 
-from src.interface.dtos.internal.graph.nodes.document_node import DocumentNode
-from src.interface.dtos.internal.graph.nodes.big_part_node import BigPartNode
-from src.interface.dtos.internal.graph.nodes.chapter_node import ChapterNode
-from src.interface.dtos.internal.graph.nodes.part_node import PartNode
-from src.interface.dtos.internal.graph.nodes.mini_part_node import MiniPartNode
-from src.interface.dtos.internal.graph.nodes.article_node import ArticleNode
-from src.interface.dtos.internal.graph.nodes.document_type_node import DocumentTypeNode
-from src.interface.dtos.internal.graph.nodes.issuing_authority_node import IssuingAuthorityNode
-from src.interface.dtos.internal.graph.nodes.sector_node import SectorNode
+from interface.dtos.internal.graph.nodes.document_node import DocumentNode
+from interface.dtos.internal.graph.nodes.big_part_node import BigPartNode
+from interface.dtos.internal.graph.nodes.chapter_node import ChapterNode
+from interface.dtos.internal.graph.nodes.part_node import PartNode
+from interface.dtos.internal.graph.nodes.mini_part_node import MiniPartNode
+from interface.dtos.internal.graph.nodes.article_node import ArticleNode
+from interface.dtos.internal.graph.nodes.document_type_node import DocumentTypeNode
+from interface.dtos.internal.graph.nodes.issuing_authority_node import IssuingAuthorityNode
+from interface.dtos.internal.graph.nodes.sector_node import SectorNode
 
-from src.interface.dtos.internal.graph.edges.amend_edge import AmendEdge
-from src.interface.dtos.internal.graph.edges.concern_edge import ConcernEdge
-from src.interface.dtos.internal.graph.edges.consolidate_edge import ConsolidateEdge
-from src.interface.dtos.internal.graph.edges.contain_edge import ContainEdge
-from src.interface.dtos.internal.graph.edges.correct_edge import CorrectEdge
-from src.interface.dtos.internal.graph.edges.guide_edge import GuideEdge
-from src.interface.dtos.internal.graph.edges.implement_amendment_edge import ImplementAmendmentEdge
-from src.interface.dtos.internal.graph.edges.is_amended_to_edge import IsAmendedToEdge
-from src.interface.dtos.internal.graph.edges.is_edge import IsEdge
-from src.interface.dtos.internal.graph.edges.issue_edge import IssueEdge
-from src.interface.dtos.internal.graph.edges.replace_edge import ReplaceEdge
-from src.interface.dtos.internal.graph.edges.supplement_edge import SupplementEdge
-from src.interface.dtos.internal.graph.edges.suspend_edge import SuspendEdge
+from interface.dtos.internal.graph.edges.amend_edge import AmendEdge
+from interface.dtos.internal.graph.edges.concern_edge import ConcernEdge
+from interface.dtos.internal.graph.edges.consolidate_edge import ConsolidateEdge
+from interface.dtos.internal.graph.edges.contain_edge import ContainEdge
+from interface.dtos.internal.graph.edges.correct_edge import CorrectEdge
+from interface.dtos.internal.graph.edges.guide_edge import GuideEdge
+from interface.dtos.internal.graph.edges.implement_amendment_edge import ImplementAmendmentEdge
+from interface.dtos.internal.graph.edges.is_amended_to_edge import IsAmendedToEdge
+from interface.dtos.internal.graph.edges.is_edge import IsEdge
+from interface.dtos.internal.graph.edges.issue_edge import IssueEdge
+from interface.dtos.internal.graph.edges.replace_edge import ReplaceEdge
+from interface.dtos.internal.graph.edges.supplement_edge import SupplementEdge
+from interface.dtos.internal.graph.edges.suspend_edge import SuspendEdge
 
-from src.utils.datetime_utils import get_current_timestamp
+from utils.datetime_utils import get_current_timestamp
+from utils.logger import logger
 
 
 class DocumentService:
@@ -42,11 +43,13 @@ class DocumentService:
         self.document_repository = document_repository
         self.graph_repository = graph_repository
         self.uuid_namespace = uuid_namespace
-
+    
     def ingest_document(self, document_id: int) -> None:
-        document_data = self.document_repository.fetch_all(document_id=document_id)
+        start_time = time.time()
         
         try:
+            document_data = self.document_repository.fetch_all(document_id=document_id)
+
             nodes = []
             triples = []
 
@@ -426,5 +429,7 @@ class DocumentService:
 
             self.graph_repository.create_nodes(nodes=nodes)
             self.graph_repository.create_edges(triples=triples)
-        except Exception as e:
-            raise IngestionError(message=f"Failed to ingest document ID {document_id}") from e
+        except Exception:
+            raise
+        finally:
+            logger.info(msg=f"{round(time.time() - start_time, 4)} s")

@@ -1,14 +1,14 @@
-from src.interface.dtos.external.document.document_dto import DocumentDto
-from src.interface.dtos.external.document.big_part_dto import BigPartDto
-from src.interface.dtos.external.document.chapter_dto import ChapterDto
-from src.interface.dtos.external.document.part_dto import PartDto
-from src.interface.dtos.external.document.mini_part_dto import MiniPartDto
-from src.interface.dtos.external.document.article_dto import ArticleDto
-from src.interface.dtos.external.document.article_version_dto import ArticleVersionDto
-from src.interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
-from src.interface.dtos.external.document.document_type_dto import DocumentTypeDto
-from src.interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
-from src.interface.dtos.external.document.sector_dto import SectorDto
+from interface.dtos.external.document.document_dto import DocumentDto
+from interface.dtos.external.document.big_part_dto import BigPartDto
+from interface.dtos.external.document.chapter_dto import ChapterDto
+from interface.dtos.external.document.part_dto import PartDto
+from interface.dtos.external.document.mini_part_dto import MiniPartDto
+from interface.dtos.external.document.article_dto import ArticleDto
+from interface.dtos.external.document.article_version_dto import ArticleVersionDto
+from interface.dtos.external.document.document_mapping_dto import DocumentMappingDto
+from interface.dtos.external.document.document_type_dto import DocumentTypeDto
+from interface.dtos.external.document.issuing_authority_dto import IssuingAuthorityDto
+from interface.dtos.external.document.sector_dto import SectorDto
 
 
 class FetchDocumentResult:

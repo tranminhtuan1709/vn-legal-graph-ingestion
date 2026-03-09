@@ -1,4 +1,4 @@
-from src.interface.dtos.internal.graph.edge import Edge
+from interface.dtos.internal.graph.edge import Edge
 
 
 class IsAmendedToEdge(Edge):
