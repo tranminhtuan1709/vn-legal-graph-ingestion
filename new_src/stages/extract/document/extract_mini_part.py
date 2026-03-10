@@ -15,8 +15,8 @@ def fetch_mini_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict
                     id,
                     vbpl_id,
                     vbpl_part_id,
-                    big_part_number,
-                    big_part_name
+                    mini_part_number,
+                    mini_part_name
                 FROM vbpl_mini_part
                 WHERE vbpl_id = %(document_id)s
             """,

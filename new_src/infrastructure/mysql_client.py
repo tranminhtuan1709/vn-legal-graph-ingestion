@@ -21,11 +21,10 @@ class MySQLClient:
         except Exception:
             raise
 
-    def get_connection(self) -> tuple[MySQLConnectionAbstract, MySQLCursorAbstract]:
+    def get_connection(self) -> MySQLConnectionAbstract:
         try:
             connection = self.connection_pool.get_connection()
-            cursor = connection.cursor(dictionary=True)
 
-            return connection, cursor
+            return connection
         except Exception:
             raise

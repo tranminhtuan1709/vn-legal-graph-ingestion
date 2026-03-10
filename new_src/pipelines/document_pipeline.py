@@ -51,7 +51,7 @@ class DocumentPipeline:
             return {
                 "document": fetch_document(cursor, document_id),
                 "big_parts": fetch_big_parts(cursor, document_id),
-                "chapter": fetch_chapters(cursor, document_id),
+                "chapters": fetch_chapters(cursor, document_id),
                 "parts": fetch_parts(cursor, document_id),
                 "mini_parts": fetch_mini_parts(cursor, document_id),
                 "articles": fetch_articles(cursor, document_id),
@@ -74,14 +74,14 @@ class DocumentPipeline:
 
         try:
             document_data =  DocumentData(
-                transform_document_dto(raw_data.get("document")),
-                transform_big_part_dtos(raw_data.get("big_parts")),
-                transform_chapter_dtos(raw_data.get("chapters")),
-                transform_part_dtos(raw_data.get("parts")),
-                transform_mini_part_dtos(raw_data.get("mini_parts")),
-                transform_article_dtos(raw_data.get("articles")),
-                transform_article_version_dtos(raw_data.get("article_versions")),
-                transform_document_mapping_dtos(raw_data.get("document_mappings"))
+                document_dto=transform_document_dto(raw_data.get("document")),
+                big_part_dtos=transform_big_part_dtos(raw_data.get("big_parts")),
+                chapter_dtos=transform_chapter_dtos(raw_data.get("chapters")),
+                part_dtos=transform_part_dtos(raw_data.get("parts")),
+                mini_part_dtos=transform_mini_part_dtos(raw_data.get("mini_parts")),
+                article_dtos=transform_article_dtos(raw_data.get("articles")),
+                article_version_dtos=transform_article_version_dtos(raw_data.get("article_versions")),
+                document_mapping_dtos=transform_document_mapping_dtos(raw_data.get("document_mappings"))
             )
             
             return document_to_graph(document_data)
@@ -103,6 +103,8 @@ class DocumentPipeline:
             detach_document_subgraph(transaction, document_id)
             create_nodes(transaction, nodes)
             create_edges(transaction, edges)
+
+            transaction.commit()
         except Exception:
             if transaction is not None:
                 transaction.rollback()
@@ -116,7 +118,6 @@ class DocumentPipeline:
 
             if session is not None:
                 session.close()
-
     
     def run(self, document_id: int) -> None:
         start_time = time.time()
@@ -124,11 +125,12 @@ class DocumentPipeline:
         try:
             raw_data = self.extract(document_id)
             nodes, edges = self.transform(raw_data)
-            self.load(document_id, document_id, nodes, edges)
+            self.load(document_id, nodes, edges)
             logger.info(f"Processed document ID {document_id}")
         except Exception:
-            logger.error(f"Failed while processing document ID: {document_id}", exc_info=True)
+            logger.error(f"Document pipeline failed while processing document ID: {document_id}", exc_info=True)
+            raise
         finally:
             logger.info(f"{time.time() - start_time} s")
-            logger.info(f"{'=' * 100}\n\n\n")
+            logger.info(f"\n\n\n{'=' * 100}\n\n\n")
     

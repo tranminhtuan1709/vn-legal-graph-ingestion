@@ -61,8 +61,8 @@ def fetch_article_versions(cursor: MySQLCursorAbstract, document_id: int) -> lis
                     article_versions.phu_luc_sd,
                     article_versions.phu_luc_dsd,
                     article_versions.loai_vb,
-                    article_versions.from_date,
-                    article_versions.to_date,
+                    CONVERT(article_versions.from_date, CHAR) AS from_date,
+                    CONVERT(article_versions.to_date, CHAR) AS to_date,
                     article_versions.bai_bo_noi_dung_truoc,
                     article_versions.noi_dung_sua_doi
                 FROM article_versions

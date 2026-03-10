@@ -27,7 +27,7 @@ producer.produce(
             "event_type": "document_approval",
             "timestamp": get_current_timestamp(),
             "source": "db_review",
-            "document_id": 36138
+            "document_id": 146773
         }
     ).encode()
 )

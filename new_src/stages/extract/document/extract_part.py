@@ -14,7 +14,7 @@ def fetch_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str,
                 SELECT
                     id,
                     vbpl_id,
-                    vbpl_chapter_id
+                    vbpl_chapter_id,
                     part_number,
                     part_name
                 FROM vbpl_part

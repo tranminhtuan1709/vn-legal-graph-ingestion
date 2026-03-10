@@ -1,4 +1,4 @@
-from edge import Edge
+from dtos.graph.edges.edge import Edge
 
 
 class AmendEdge(Edge):

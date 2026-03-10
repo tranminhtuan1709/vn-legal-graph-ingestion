@@ -12,7 +12,7 @@ def transform_chapter_dtos(raw_chapter_dtos: list[dict[str, Any]]) -> list[Chapt
         chapter_dtos = [ChapterDto(**dto) for dto in raw_chapter_dtos]
 
         for dto in chapter_dtos:
-            for field in ["chapter_numner", "chapter_name"]:
+            for field in ["chapter_number", "chapter_name"]:
                 value = dto.__getattribute__(field)
 
                 if isinstance(value, str):

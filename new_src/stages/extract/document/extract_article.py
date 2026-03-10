@@ -22,7 +22,7 @@ def fetch_articles(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[s
                     section_name,
                     section_content,
                     so_phu_luc,
-                    effective_date
+                    CONVERT(effective_date, CHAR) AS effective_date
                 FROM vbpl_section
                 WHERE vbpl_id = %(document_id)s
             """,

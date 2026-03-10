@@ -1,4 +1,4 @@
-from node import Node
+from dtos.graph.nodes.node import Node
 
 
 class ArticleNode(Node):

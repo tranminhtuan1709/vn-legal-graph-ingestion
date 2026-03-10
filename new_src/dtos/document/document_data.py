@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
-from document.document_dto import DocumentDto
-from document.big_part_dto import BigPartDto
-from document.chapter_dto import ChapterDto
-from document.part_dto import PartDto
-from document.mini_part_dto import MiniPartDto
-from document.article_dto import ArticleDto
-from document.article_version_dto import ArticleVersionDto
-from document.document_mapping_dto import DocumentMappingDto
+from dtos.document.document_dto import DocumentDto
+from dtos.document.big_part_dto import BigPartDto
+from dtos.document.chapter_dto import ChapterDto
+from dtos.document.part_dto import PartDto
+from dtos.document.mini_part_dto import MiniPartDto
+from dtos.document.article_dto import ArticleDto
+from dtos.document.article_version_dto import ArticleVersionDto
+from dtos.document.document_mapping_dto import DocumentMappingDto
 
 
 class DocumentData(BaseModel):

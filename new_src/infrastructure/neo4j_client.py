@@ -20,7 +20,7 @@ class Neo4jClient:
     
     def get_session(self) -> Session:
         try:
-            session = self.driver.session(database=self.config.database)
+            session = self.driver.session(database=self.config.get("database"))
 
             return session
         except Exception:

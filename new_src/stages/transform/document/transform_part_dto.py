@@ -12,7 +12,7 @@ def transform_part_dtos(raw_part_dtos: list[dict[str, Any]]) -> list[PartDto]:
         part_dtos = [PartDto(**dto) for dto in raw_part_dtos]
 
         for dto in part_dtos:
-            for field in ["part_numner", "part_name"]:
+            for field in ["part_number", "part_name"]:
                 value = dto.__getattribute__(field)
 
                 if isinstance(value, str):

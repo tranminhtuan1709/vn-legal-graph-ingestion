@@ -6,6 +6,9 @@ from utils.logger import logger
 
 
 def create_edges(transaction: Transaction, edges: list[Edge]) -> None:
+    for edge in edges:
+        print(edge.__dict__)
+    
     start_time = time.time()
     
     try:
