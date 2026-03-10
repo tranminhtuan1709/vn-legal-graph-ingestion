@@ -1,11 +1,11 @@
 import time
+from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from dtos.extracted.document.extracted_mini_part import ExtractedMiniPart
 from utils.logger import logger
 
 
-def fetch_mini_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[ExtractedMiniPart]:
+def fetch_mini_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str, Any]]:
     start_time = time.time()
 
     try:
@@ -25,11 +25,9 @@ def fetch_mini_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[Extr
             }
         )
 
-        records = cursor.fetchall()
-
-        return [ExtractedMiniPart(**record) for record in records]
+        return cursor.fetchall()
     except Exception:
         raise
     finally:
-        logger.info(msg=f"{time.time() - start_time} s")
+        logger.info(f"{time.time() - start_time} s")
     

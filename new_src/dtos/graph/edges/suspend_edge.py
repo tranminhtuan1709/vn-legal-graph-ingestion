@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from edge import Edge
 
 
-class SuspendEdge(BaseModel):
-    from_node_id: str
-    to_node_id: str
-    edge_type: str
-    created_at: str
+class SuspendEdge(Edge):
     from_date: str | None
     to_date: str | None
     

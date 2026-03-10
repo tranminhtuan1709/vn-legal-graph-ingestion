@@ -1,13 +1,9 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class ArticleNode(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class ArticleNode(Node):
     article_id: int
-    article_number: str
+    article_number: str | None
     article_name: str | None
     article_content: str | None
     effective_date: str | None

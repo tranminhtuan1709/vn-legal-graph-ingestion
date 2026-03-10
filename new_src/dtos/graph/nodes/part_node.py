@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class PartNode(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class PartNode(Node):
     part_id: int
     part_number: str | None
     part_name: str | None

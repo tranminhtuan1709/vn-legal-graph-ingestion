@@ -1,14 +1,10 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class DocumentNode(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class DocumentNode(Node):
     document_id: int
-    document_number: str
-    document_name: str
+    document_number: str | None
+    document_name: str | None
     issued_date: str | None
     effective_date: str | None
     expiry_date: str | None

@@ -1,11 +1,11 @@
 import time
+from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from dtos.extracted.document.extracted_document_mapping import ExtractedDocumentMapping
 from utils.logger import logger
 
 
-def fetch_document_mappings(cursor: MySQLCursorAbstract, document_id: int) -> list[ExtractedDocumentMapping]:
+def fetch_document_mappings(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str, Any]]:
     start_time = time.time()
 
     try:
@@ -26,11 +26,9 @@ def fetch_document_mappings(cursor: MySQLCursorAbstract, document_id: int) -> li
             }
         )
 
-        records = cursor.fetchall()
-
-        return [ExtractedDocumentMapping(**record) for record in records]
+        return cursor.fetchall()
     except Exception:
         raise
     finally:
-        logger.info(msg=f"{time.time() - start_time} s")
+        logger.info(f"{time.time() - start_time} s")
     

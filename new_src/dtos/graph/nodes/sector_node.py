@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class Sector(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class SectorNode(Node):
     sector_id: int
     sector_name: str
     

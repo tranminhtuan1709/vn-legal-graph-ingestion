@@ -1,8 +1,9 @@
 import uuid
+import os
 
 
-def get_node_id(namespace: str, node_id: int, node_label: str) -> str:
+def get_node_id(business_id: int, node_label: str) -> str:
     return uuid.uuid5(
-        namespace=namespace,
-        name=f"{node_label}_{node_id}"
+        namespace=os.getenv("UUID_NAMESPACE"),
+        name=f"{node_label}_{business_id}"
     ).__str__()

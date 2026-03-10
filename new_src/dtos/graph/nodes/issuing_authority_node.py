@@ -1,10 +1,6 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class IssuingAuthorityNode(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class IssuingAuthorityNode(Node):
     issuing_authority_id: int
     issuing_authority_name: str

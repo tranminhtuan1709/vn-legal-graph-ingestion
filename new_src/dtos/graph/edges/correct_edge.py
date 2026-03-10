@@ -1,10 +1,6 @@
-from pydantic import BaseModel
+from edge import Edge
 
 
-class CorrectEdge(BaseModel):
-    from_node_id: str
-    to_node_id: str
-    edge_type: str
-    created_at: str
+class CorrectEdge(Edge):
     document_mapping_id: int
     

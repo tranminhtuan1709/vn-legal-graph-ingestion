@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from node import Node
 
 
-class DocumentTypeNode(BaseModel):
-    node_id: str
-    node_label: str
-    created_at: str
-    source: str
+class DocumentTypeNode(Node):
     document_type_id: int
     document_type_name: str
     

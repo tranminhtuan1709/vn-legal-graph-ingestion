@@ -1,11 +1,7 @@
-from pydantic import BaseModel
+from edge import Edge
 
 
-class ImplementAmendmentEdge(BaseModel):
-    from_node_id: str
-    to_node_id: str
-    edge_type: str
-    created_at: str
+class ImplementAmendmentEdge(Edge):
     version_id: int
     from_date: str | None
     to_date: str | None

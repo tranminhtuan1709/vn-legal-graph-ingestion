@@ -1,10 +1,10 @@
 import time
 from mysql.connector.abstracts import MySQLCursorAbstract
+from typing import Any
 
-from dtos.extracted.document.extracted_document import ExtractedDocument
 from utils.logger import logger
 
-def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> ExtractedDocument:
+def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> dict[str, Any]:
     start_time = time.time()
 
     try:
@@ -33,11 +33,9 @@ def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> ExtractedDo
             }
         )
 
-        record = cursor.fetchone()
-
-        return ExtractedDocument(**record)
+        return cursor.fetchone()
     except Exception:
         raise
     finally:
-        logger.info(msg=f"{time.time() - start_time} s")
+        logger.info(f"{time.time() - start_time} s")
     

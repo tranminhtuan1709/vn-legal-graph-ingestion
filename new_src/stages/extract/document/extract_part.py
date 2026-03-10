@@ -1,11 +1,11 @@
 import time
+from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from dtos.extracted.document.extracted_part import ExtractedPart
 from utils.logger import logger
 
 
-def fetch_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[ExtractedPart]:
+def fetch_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str, Any]]:
     start_time = time.time()
 
     try:
@@ -25,11 +25,9 @@ def fetch_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[Extracted
             }
         )
 
-        records = cursor.fetchall()
-
-        return [ExtractedPart(**record) for record in records]
+        return cursor.fetchall()
     except Exception:
         raise
     finally:
-        logger.info(msg=f"{time.time() - start_time} s")
+        logger.info(f"{time.time() - start_time} s")
     
