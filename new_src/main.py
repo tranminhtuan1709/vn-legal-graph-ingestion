@@ -74,8 +74,7 @@ while True:
         if topic == "approved_documents":
             document_pipeline.run(message_value.get("document_id"))
     except Exception:
-        # logger.error("An unexpected error occured", exc_info=True)
-        break
+        logger.error("An unexpected error occured", exc_info=True)
     finally:
         kafka_client.consumer.commit()
     

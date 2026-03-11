@@ -31,7 +31,7 @@ def create_edges(transaction: Transaction, edges: list[Edge]) -> None:
                     {
                         "from_node_id": edge.from_node_id,
                         "to_node_id": edge.to_node_id,
-                        "edge_properties": edge.model_dump(exclude={"from_node_id", "to_node_id"})
+                        "edge_properties": edge.model_dump_json(exclude={"from_node_id", "to_node_id"})
                     }
                 )
             

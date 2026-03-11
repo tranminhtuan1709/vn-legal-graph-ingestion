@@ -129,7 +129,6 @@ class DocumentPipeline:
             logger.info(f"Processed document ID {document_id}")
         except Exception:
             logger.error(f"Document pipeline failed while processing document ID: {document_id}", exc_info=True)
-            raise
         finally:
             logger.info(f"{time.time() - start_time} s")
             logger.info(f"\n\n\n{'=' * 100}\n\n\n")

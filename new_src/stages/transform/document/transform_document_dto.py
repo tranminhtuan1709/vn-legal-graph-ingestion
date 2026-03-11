@@ -4,56 +4,52 @@ from typing import Any
 
 from dtos.document.document_dto import DocumentDto
 from utils.logger import logger
-from utils.datetime_utils import format_date
 
 
 def transform_document_dto(raw_document_dto: dict[str, Any]) -> DocumentDto:
     start_time = time.time()
 
     try:
-        co_quan_ban_hanh = raw_document_dto.get("co_quan_ban_hanh")
-        id_co_quan_ban_hanh = raw_document_dto.get("id_co_quan_ban_hanh")
+        issuing_authorities = raw_document_dto.get("issuing_authorities")
+        issuing_authority_ids = raw_document_dto.get("issuing_authority_ids")
 
-        list_co_quan_ban_hanh = []
-        list_id_co_quan_ban_hanh = []
+        list_issuing_authorities = []
+        list_issuing_authority_ids = []
 
-        if isinstance(co_quan_ban_hanh, str):
-            list_co_quan_ban_hanh = co_quan_ban_hanh.split(",")
+        if isinstance(issuing_authorities, str):
+            list_issuing_authorities = issuing_authorities.split(",")
 
-        if isinstance(id_co_quan_ban_hanh, str):
-            list_id_co_quan_ban_hanh = json.loads(id_co_quan_ban_hanh)      
+        if isinstance(issuing_authority_ids, str):
+            list_issuing_authority_ids = json.loads(issuing_authority_ids)      
         
         document_dto = DocumentDto(
-            id=raw_document_dto.get("id"),
-            so_ky_hieu=raw_document_dto.get("so_ky_hieu"),
-            ten_hien_thi=raw_document_dto.get("ten_hien_thi"),
-            ngay_ban_hanh=raw_document_dto.get("ngay_ban_hanh"),
-            ngay_co_hieu_luc=raw_document_dto.get("ngay_co_hieu_luc"),
-            ngay_het_han=raw_document_dto.get("ngay_het_han"),
-            trang_thai=raw_document_dto.get("trang_thai"),
-            chu_thich_nho=raw_document_dto.get("chu_thich_nho"),
-            loai_van_ban=raw_document_dto.get("loai_van_ban"),
-            linh_vuc=raw_document_dto.get("linh_vuc"),
-            co_quan_ban_hanh=list_co_quan_ban_hanh,
-            id_loai_van_ban=raw_document_dto.get("id_loai_van_ban"),
-            id_linh_vuc=raw_document_dto.get("id_linh_vuc"),
-            id_co_quan_ban_hanh=list_id_co_quan_ban_hanh,
+            document_id=raw_document_dto.get("document_id"),
+            document_number=raw_document_dto.get("document_number"),
+            document_name=raw_document_dto.get("document_name"),
+            issued_date=raw_document_dto.get("issued_date"),
+            effective_date=raw_document_dto.get("effective_date"),
+            expiry_date=raw_document_dto.get("expiry_date"),
+            status=raw_document_dto.get("status"),
+            small_note=raw_document_dto.get("small_note"),
+            document_type=raw_document_dto.get("document_type"),
+            sector=raw_document_dto.get("sector"),
+            issuing_authorities=list_issuing_authorities,
+            document_type_id=raw_document_dto.get("document_type_id"),
+            sector_id=raw_document_dto.get("sector_id"),
+            issuing_authority_ids=list_issuing_authority_ids,
         )
 
-        for field in ["so_ky_hieu", "ten_hien_thi", "trang_thai", "chu_thich_nho", "loai_van_ban", "linh_vuc"]:
+        if isinstance(document_dto.document_number, str):
+            document_dto.document_number = document_dto.document_number.upper().strip()
+
+        for field in ["document_name", "status", "small_note", "document_type", "sector"]:
             value = document_dto.__getattribute__(field)
 
             if isinstance(value, str):
                 document_dto.__setattr__(field, value.lower().strip())
         
-        for field in ["ngay_ban_hanh", "ngay_co_hieu_luc", "ngay_het_han"]:
-            value = document_dto.__getattribute__(field)
-
-            if isinstance(value, str):
-                document_dto.__setattr__(field, format_date(input=value, format="%Y-%m-%d"))
-        
-        if len(document_dto.co_quan_ban_hanh) > 0:
-            document_dto.co_quan_ban_hanh = [item.lower().strip() for item in document_dto.co_quan_ban_hanh]
+        if len(document_dto.issuing_authorities) > 0:
+            document_dto.issuing_authorities = [item.lower().strip() for item in document_dto.issuing_authorities]
         
         return document_dto
     except Exception:

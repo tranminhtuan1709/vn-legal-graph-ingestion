@@ -1,4 +1,5 @@
 from dtos.graph.nodes.node import Node
+from datetime import date
 
 
 class ArticleNode(Node):
@@ -6,6 +7,6 @@ class ArticleNode(Node):
     article_number: str | None
     article_name: str | None
     article_content: str | None
-    effective_date: str | None
     appendix: str | None
+    effective_date: date | None
     

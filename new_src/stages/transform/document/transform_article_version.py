@@ -3,50 +3,55 @@ from typing import Any
 
 from dtos.document.article_version_dto import ArticleVersionDto
 from utils.logger import logger
-from utils.datetime_utils import format_date
 
 
 def transform_article_version_dtos(raw_article_version_dtos: list[dict[str, Any]]) -> list[ArticleVersionDto]:
     start_time = time.time()
 
     try:
-        article_version_dtos = []
+        article_version_dtos: list[ArticleVersionDto] = []
 
         for dto in raw_article_version_dtos:
             article_version_dtos.append(
                 ArticleVersionDto(
                     version_id=dto.get("version_id"),
-                    vbplsd_id=dto.get("vbplsd_id"),
-                    vbpldsd_id=dto.get("vbpldsd_id"),
-                    dieu_sd=dto.get("dieu_sd"),
-                    dieu_dsd=dto.get("dieu_dsd"),
-                    dieu_sd_id=dto.get("dieu_sd_id"),
-                    dieu_dsd_id=dto.get("dieu_dsd_id"),
-                    phu_luc_sd=dto.get("phu_luc_sd"),
-                    phu_luc_dsd=dto.get("phu_luc_dsd"),
-                    loai_vb=dto.get("loai_vb"),
+
+                    from_article_id=dto.get("from_article_id"),
+                    from_article_number=dto.get("from_article_number"),
+                    from_article_name=dto.get("from_article_name"),
+                    from_article_content=dto.get("from_article_content"),
+                    from_appendix_number=dto.get("from_appendix_number"),
+                    from_effective_date=dto.get("from_effective_date"),
+
+                    to_article_id=dto.get("to_article_id"),
+                    to_article_number=dto.get("to_article_number"),
+                    to_article_name=dto.get("to_article_name"),
+                    to_article_content=dto.get("to_article_content"),
+                    to_appendix_number=dto.get("to_appendix_number"),
+                    to_effective_date=dto.get("to_effective_date"),
+
+                    modification_type=dto.get("modification_type"),
+                    modification_content=dto.get("modification_content"),
+                    is_abolish_previous_content=dto.get("is_abolish_previous_content"),
                     from_date=dto.get("from_date"),
-                    to_date=dto.get("to_date"),
-                    bai_bo_noi_dung_truoc=bool(dto.get("bai_bo_noi_dung_truoc")),
-                    noi_dung_sua_doi=dto.get("noi_dung_sua_doi"),
+                    to_date=dto.get("to_date")
                 )
             )
 
         for dto in article_version_dtos:
-            for field in ["dieu_sd", "dieu_dsd", "phu_luc_sd", "phu_luc_dsd", "noi_dung_sua_doi"]:
+            for field in [
+                "from_article_number", "from_article_name", "from_article_content", "from_appendix_number",
+                "to_article_number", "to_article_name", "to_article_content", "to_appendix_number",
+                "modification_content"
+            ]:
                 value = dto.__getattribute__(field)
 
                 if isinstance(value, str):
                     dto.__setattr__(field, value.lower().strip())
-
-            for field in ["from_date", "to_date"]:
-                value = dto.__getattribute__(field)
-
-                if isinstance(value, str):
-                    dto.__setattr__(field, format_date(input=value, format="%Y-%m-%d"))
 
         return article_version_dtos
     except Exception:
         pass
     finally:
         logger.info(f"{time.time() - start_time} s")
+    

@@ -1,16 +1,17 @@
 from pydantic import BaseModel
+from datetime import date
 
 
 class ArticleDto(BaseModel):
-    id: int
-    vbpl_id: int
-    vbpl_big_part_id: int | None
-    vbpl_chapter_id: int | None
-    vbpl_part_id: int | None
-    vbpl_mini_part_id: int | None
-    section_number: str | None
-    section_name: str | None
-    section_content: str | None
-    so_phu_luc: str | None
-    effective_date: str | None
+    document_id: int
+    big_part_id: int | None
+    chapter_id: int | None
+    part_id: int | None
+    mini_part_id: int | None
+    article_id: int
+    article_number: str | None
+    article_name: str | None
+    article_content: str | None
+    appendix_number: str | None
+    effective_date: date | None
     

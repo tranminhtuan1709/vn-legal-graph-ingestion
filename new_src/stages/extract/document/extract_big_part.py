@@ -12,8 +12,8 @@ def fetch_big_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[
         cursor.execute(
             operation="""
                 SELECT
-                    id,
-                    vbpl_id,
+                    vbpl_id AS document_id,
+                    id AS big_part_id,
                     big_part_number,
                     big_part_name
                 FROM vbpl_big_part

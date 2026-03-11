@@ -12,9 +12,9 @@ def fetch_mini_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict
         cursor.execute(
             operation="""
                 SELECT
-                    id,
-                    vbpl_id,
-                    vbpl_part_id,
+                    vbpl_id AS document_id,
+                    vbpl_part_id AS part_id,
+                    id AS mini_part_id,
                     mini_part_number,
                     mini_part_name
                 FROM vbpl_mini_part

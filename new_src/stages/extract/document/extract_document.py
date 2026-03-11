@@ -11,20 +11,20 @@ def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> dict[str, A
         cursor.execute(
             operation="""
                 SELECT
-                    id,
-                    so_ky_hieu,
-                    ten_hien_thi,
-                    CONVERT(ngay_ban_hanh, CHAR) AS ngay_ban_hanh,
-                    CONVERT(ngay_co_hieu_luc, CHAR) AS ngay_co_hieu_luc,
-                    CONVERT(ngay_het_han, CHAR) AS ngay_het_han,
-                    trang_thai,
-                    chu_thich_nho,
-                    loai_van_ban,
-                    linh_vuc,
-                    co_quan_ban_hanh,
-                    id_loai_van_ban,
-                    id_linh_vuc,
-                    id_co_quan_ban_hanh
+                    id AS document_id,
+                    so_ky_hieu AS document_number,
+                    ten_vbpl AS document_name,
+                    DATE(ngay_ban_hanh) AS issued_date,
+                    DATE(ngay_co_hieu_luc) AS effective_date,
+                    DATE(ngay_het_han) AS expiry_date,
+                    trang_thai AS status,
+                    chu_thich_nho AS small_note,
+                    loai_van_ban AS document_type,
+                    linh_vuc AS sector,
+                    co_quan_ban_hanh AS issuing_authorities,
+                    id_loai_van_ban AS document_type_id,
+                    id_linh_vuc AS sector_id,
+                    id_co_quan_ban_hanh AS issuing_authority_ids
                 FROM vbpl
                 WHERE id = %(document_id)s;
             """,

@@ -21,7 +21,7 @@ def create_nodes(transaction: Transaction, nodes: list[Node]) -> None:
                 node_groups[node.node_label].append(node)
         
         for group_label, group_nodes in node_groups.items():
-            batch = [node.model_dump(exclude={"node_label"}) for node in group_nodes]
+            batch = [node.model_dump_json(exclude={"node_label"}) for node in group_nodes]
 
             transaction.run(
                 query=f"""

@@ -1,19 +1,20 @@
 from pydantic import BaseModel
+from datetime import date
 
 
 class DocumentDto(BaseModel):
-    id: int
-    so_ky_hieu: str | None
-    ten_hien_thi: str | None
-    ngay_ban_hanh: str | None
-    ngay_co_hieu_luc: str | None
-    ngay_het_han: str | None
-    trang_thai: str | None
-    chu_thich_nho: str | None
-    loai_van_ban: str | None
-    linh_vuc: str | None
-    co_quan_ban_hanh: list[str]
-    id_loai_van_ban: int | None
-    id_linh_vuc: int | None
-    id_co_quan_ban_hanh: list[int]
+    document_id: int
+    document_number: str | None
+    document_name: str | None
+    issued_date: date | None
+    effective_date: date | None
+    expiry_date: date | None
+    status: str | None
+    small_note: str | None
+    document_type: str | None
+    sector: str | None
+    issuing_authorities: list[str]
+    document_type_id: int | None
+    sector_id: int | None
+    issuing_authority_ids: list[int]
     

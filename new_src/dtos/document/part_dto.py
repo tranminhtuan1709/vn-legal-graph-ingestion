@@ -2,9 +2,9 @@ from pydantic import BaseModel
 
 
 class PartDto(BaseModel):
-    id: int
-    vbpl_id: int
-    vbpl_chapter_id: int | None
+    document_id: int
+    chapter_id: int | None
+    part_id: int
     part_number: str | None
     part_name: str | None
     
