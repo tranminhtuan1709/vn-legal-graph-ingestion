@@ -2,6 +2,5 @@
 .obsidian/
 logs/
 venv/
-_pycache__/
-tests/
+__pycache__/
 .env
