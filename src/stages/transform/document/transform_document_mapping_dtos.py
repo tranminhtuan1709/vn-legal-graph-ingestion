@@ -1,13 +1,9 @@
-import time
 from typing import Any
 
 from dtos.document.document_mapping_dto import DocumentMappingDto
-from utils.logger import logger
 
 
 def transform_document_mapping_dtos(raw_document_mapping_dtos: list[dict[str, Any]]) -> list[DocumentMappingDto]:
-    start_time = time.time()
-
     try:
         document_mapping_dtos = [DocumentMappingDto(**dto) for dto in raw_document_mapping_dtos]
 
@@ -30,6 +26,3 @@ def transform_document_mapping_dtos(raw_document_mapping_dtos: list[dict[str, An
         return document_mapping_dtos
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

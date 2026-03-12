@@ -11,7 +11,7 @@ from dtos.document.document_mapping_dto import DocumentMappingDto
 
 
 class DocumentData(BaseModel):
-    document_dto: DocumentDto
+    document_dto: DocumentDto | None
     big_part_dtos: list[BigPartDto]
     chapter_dtos: list[ChapterDto]
     part_dtos: list[PartDto]

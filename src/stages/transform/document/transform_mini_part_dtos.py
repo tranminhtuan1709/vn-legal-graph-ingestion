@@ -4,6 +4,9 @@ from dtos.document.mini_part_dto import MiniPartDto
 
 
 def transform_mini_part_dtos(raw_mini_part_dtos: list[dict[str, Any]]) -> list[MiniPartDto]:
+    if len(raw_mini_part_dtos) == 0:
+        return []
+    
     try:
         mini_part_dtos = [MiniPartDto(**dto) for dto in raw_mini_part_dtos]
 

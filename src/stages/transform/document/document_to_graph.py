@@ -42,6 +42,9 @@ def document_dto_to_graph(document_dto: DocumentDto) -> tuple[list[Node], list[E
     nodes: list[Node] = []
     edges: list[Edge] = []
 
+    if document_dto is None:
+        return [], []
+
     nodes.append(
         DocumentNode(
             node_id=get_node_id(business_id=document_dto.document_id, node_label="Document"),
@@ -134,6 +137,9 @@ def big_part_dtos_to_graph(big_part_dtos: list[BigPartDto]) -> tuple[list[Node],
     nodes: list[Node] = []
     edges: list[Edge] = []
 
+    if len(big_part_dtos) == 0:
+        return nodes, edges
+
     for dto in big_part_dtos:
         nodes.append(
             BigPartNode(
@@ -162,6 +168,9 @@ def big_part_dtos_to_graph(big_part_dtos: list[BigPartDto]) -> tuple[list[Node],
 def chapter_dtos_to_graph(chapter_dtos: list[ChapterDto]) -> tuple[list[Node], list[Edge]]:
     nodes: list[Node] = []
     edges: list[Edge] = []
+
+    if len(chapter_dtos) == 0:
+        return nodes, edges
 
     for dto in chapter_dtos:
         nodes.append(
@@ -197,6 +206,9 @@ def part_dtos_to_graph(part_dtos: list[PartDto]) -> tuple[list[Node], list[Edge]
     nodes: list[Node] = []
     edges: list[Edge] = []
 
+    if len(part_dtos):
+        return nodes, edges
+
     for dto in part_dtos:
         nodes.append(
             PartNode(
@@ -231,6 +243,9 @@ def mini_part_dtos_to_graph(mini_part_dtos: list[MiniPartDto]) -> tuple[list[Nod
     nodes: list[Node] = []
     edges: list[Edge] = []
 
+    if len(mini_part_dtos):
+        return nodes, edges
+
     for dto in mini_part_dtos:
         nodes.append(
             MiniPartNode(
@@ -264,6 +279,9 @@ def mini_part_dtos_to_graph(mini_part_dtos: list[MiniPartDto]) -> tuple[list[Nod
 def article_dtos_to_graph(article_dtos: list[ArticleDto]) -> tuple[list[Node], list[Edge]]:
     nodes: list[Node] = []
     edges: list[Edge] = []
+
+    if len(article_dtos) == 0:
+        return nodes, edges
 
     for dto in article_dtos:
         nodes.append(
@@ -307,6 +325,9 @@ def article_dtos_to_graph(article_dtos: list[ArticleDto]) -> tuple[list[Node], l
 def document_mapping_dtos_to_graph(document_mapping_dtos: list[DocumentMappingDto]) -> tuple[list[Node], list[Edge]]:
     nodes: list[Node] = []
     edges: list[Edge] = []
+
+    if len(document_mapping_dtos) == 0:
+        return nodes, edges
 
     for dto in document_mapping_dtos:
         nodes.append(
@@ -403,6 +424,9 @@ def document_mapping_dtos_to_graph(document_mapping_dtos: list[DocumentMappingDt
 def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto]) -> tuple[list[Node], list[Edge]]:
     nodes: list[Node] = []
     edges: list[Edge] = []
+
+    if len(article_version_dtos) == 0:
+        return nodes, edges
 
     last_versions: dict[str, str] = {}
 
@@ -512,7 +536,7 @@ def document_to_graph(document_data: DocumentData) -> tuple[list[Node], list[Edg
         nodes: list[Node] = []
         edges: list[Edge] = []
 
-        converters = [
+        mappers = [
             (document_dto_to_graph, document_data.document_dto),
             (big_part_dtos_to_graph, document_data.big_part_dtos),
             (chapter_dtos_to_graph, document_data.chapter_dtos),
@@ -523,7 +547,7 @@ def document_to_graph(document_data: DocumentData) -> tuple[list[Node], list[Edg
             (article_version_dtos_to_graph, document_data.article_version_dtos),
         ]
 
-        for func, data in converters:
+        for func, data in mappers:
             n, e = func(data)
             nodes.extend(n)
             edges.extend(e)

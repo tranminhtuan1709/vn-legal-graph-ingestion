@@ -5,6 +5,9 @@ from dtos.document.document_dto import DocumentDto
 
 
 def transform_document_dto(raw_document_dto: dict[str, Any]) -> DocumentDto:
+    if raw_document_dto is None:
+        return None
+    
     try:
         issuing_authorities = raw_document_dto.get("issuing_authorities")
         issuing_authority_ids = raw_document_dto.get("issuing_authority_ids")
