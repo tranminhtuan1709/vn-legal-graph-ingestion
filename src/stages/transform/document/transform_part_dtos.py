@@ -4,6 +4,9 @@ from dtos.document.part_dto import PartDto
 
 
 def transform_part_dtos(raw_part_dtos: list[dict[str, Any]]) -> list[PartDto]:
+    if len(raw_part_dtos) == 0:
+        return []
+    
     try:
         part_dtos = [PartDto(**dto) for dto in raw_part_dtos]
 

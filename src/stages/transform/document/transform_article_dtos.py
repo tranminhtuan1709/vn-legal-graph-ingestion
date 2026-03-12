@@ -4,6 +4,9 @@ from dtos.document.article_dto import ArticleDto
 
 
 def transform_article_dtos(raw_article_dtos: list[dict[str, Any]]) -> list[ArticleDto]:
+    if len(raw_article_dtos) == 0:
+        return []
+    
     try:
         article_dtos = [ArticleDto(**dto) for dto in raw_article_dtos]
 

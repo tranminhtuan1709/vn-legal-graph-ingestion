@@ -4,6 +4,9 @@ from dtos.document.chapter_dto import ChapterDto
 
 
 def transform_chapter_dtos(raw_chapter_dtos: list[dict[str, Any]]) -> list[ChapterDto]:
+    if len(raw_chapter_dtos) == 0:
+        return []
+    
     try:
         chapter_dtos = [ChapterDto(**dto) for dto in raw_chapter_dtos]
 

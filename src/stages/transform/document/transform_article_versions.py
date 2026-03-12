@@ -4,6 +4,9 @@ from dtos.document.article_version_dto import ArticleVersionDto
 
 
 def transform_article_version_dtos(raw_article_version_dtos: list[dict[str, Any]]) -> list[ArticleVersionDto]:
+    if len(raw_article_version_dtos) == 0:
+        return []
+    
     try:
         article_version_dtos: list[ArticleVersionDto] = []
 

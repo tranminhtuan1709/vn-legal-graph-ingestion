@@ -8,7 +8,7 @@ from infrastructure.neo4j_client import Neo4jClient
 
 from pipelines.document_pipeline import DocumentPipeline
 
-from utils.logger import logger
+from utils.logger import logger, log_context
 
 load_dotenv(dotenv_path="../.env")
 
@@ -64,6 +64,7 @@ while True:
         topic = message.topic()
         logger.info(f"Received a message from topic '{topic}': {message.value()}")
         message_value = json.loads(message.value())
+        log_context.set(message_value.get("message_id"))
 
         if topic == "approved_documents":
             document_pipeline.run(message_value.get("document_id"))
@@ -71,4 +72,4 @@ while True:
         logger.error("An unexpected error occured", exc_info=True)
     finally:
         kafka_client.consumer.commit()
-    
+        log_context.set("-")
