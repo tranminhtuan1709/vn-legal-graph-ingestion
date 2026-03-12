@@ -61,7 +61,7 @@ class DocumentPipeline:
         except Exception:
             raise
         finally:
-            logger.info(f"{time.time() - start_time} s")
+            logger.info(f"Extract stage completed in {round(time.time() - start_time, 4)}s")
 
             if cursor is not None:
                 cursor.close()
@@ -88,7 +88,7 @@ class DocumentPipeline:
         except Exception:
             raise
         finally:
-            logger.info(f"{time.time() - start_time} s")
+            logger.info(f"Transform stage completed in {round(time.time() - start_time, 4)}s")
     
     def load(self, document_id: int, nodes: list[Node], edges: list[Edge]) -> None:
         start_time = time.time()
@@ -111,7 +111,7 @@ class DocumentPipeline:
             
             raise
         finally:
-            logger.info(f"{time.time() - start_time} s")
+            logger.info(f"Load stage completed in {round(time.time() - start_time, 4)} s")
 
             if transaction is not None:
                 transaction.close()
@@ -126,10 +126,9 @@ class DocumentPipeline:
             raw_data = self.extract(document_id)
             nodes, edges = self.transform(raw_data)
             self.load(document_id, nodes, edges)
-            logger.info(f"Processed document ID {document_id}")
         except Exception:
             logger.error(f"Document pipeline failed while processing document ID: {document_id}", exc_info=True)
         finally:
-            logger.info(f"{time.time() - start_time} s")
+            logger.info(f"Pipeline completed in {round(time.time() - start_time, 4)}s")
             logger.info(f"\n\n\n{'=' * 100}\n\n\n")
     

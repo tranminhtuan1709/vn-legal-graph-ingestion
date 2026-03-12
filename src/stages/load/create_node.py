@@ -1,13 +1,9 @@
-import time
 from neo4j import Transaction
 
 from dtos.graph.nodes.node import Node
-from utils.logger import logger
 
 
 def create_nodes(transaction: Transaction, nodes: list[Node]) -> None:
-    start_time = time.time()
-
     try:
         if nodes == []:
             return
@@ -21,7 +17,15 @@ def create_nodes(transaction: Transaction, nodes: list[Node]) -> None:
                 node_groups[node.node_label].append(node)
         
         for group_label, group_nodes in node_groups.items():
-            batch = [node.model_dump_json(exclude={"node_label"}) for node in group_nodes]
+            batch = []
+
+            for node in group_nodes:
+                batch.append(
+                    node.model_dump(
+                        mode="json",
+                        exclude={"node_label"}
+                    )
+                )
 
             transaction.run(
                 query=f"""
@@ -35,6 +39,3 @@ def create_nodes(transaction: Transaction, nodes: list[Node]) -> None:
             )
     except Exception:
         raise
-    finally:
-        logger.info(msg=f"{time.time() - start_time} s")
-    

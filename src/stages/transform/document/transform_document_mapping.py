@@ -29,7 +29,7 @@ def transform_document_mapping_dtos(raw_document_mapping_dtos: list[dict[str, An
         
         return document_mapping_dtos
     except Exception:
-        pass
+        raise
     finally:
         logger.info(f"{time.time() - start_time} s")
     

@@ -1,13 +1,9 @@
-import time
 from neo4j import Transaction
 
-from utils.logger import logger
 from utils.uuid_utils import get_node_id
 
 
 def detach_document_subgraph(transaction: Transaction, document_id: str) -> None:
-    start_time = time.time()
-
     try:    
         transaction.run(
             query="""
@@ -22,6 +18,3 @@ def detach_document_subgraph(transaction: Transaction, document_id: str) -> None
         )
     except Exception:
         raise
-    finally:
-        logger.info(msg=f"{time.time() - start_time} s")
-    

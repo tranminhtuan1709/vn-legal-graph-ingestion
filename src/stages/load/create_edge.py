@@ -1,16 +1,9 @@
-import time
 from neo4j import Transaction
 
 from dtos.graph.edges.edge import Edge
-from utils.logger import logger
 
 
 def create_edges(transaction: Transaction, edges: list[Edge]) -> None:
-    for edge in edges:
-        print(edge.__dict__)
-    
-    start_time = time.time()
-    
     try:
         if edges == []:
             return
@@ -31,7 +24,10 @@ def create_edges(transaction: Transaction, edges: list[Edge]) -> None:
                     {
                         "from_node_id": edge.from_node_id,
                         "to_node_id": edge.to_node_id,
-                        "edge_properties": edge.model_dump_json(exclude={"from_node_id", "to_node_id"})
+                        "edge_properties": edge.model_dump(
+                            mode="json",
+                            exclude={"from_node_id", "to_node_id"}
+                        )
                     }
                 )
             
@@ -49,6 +45,3 @@ def create_edges(transaction: Transaction, edges: list[Edge]) -> None:
             )
     except Exception:
         raise
-    finally:
-        logger.info(msg=f"{time.time() - start_time} s")
-    

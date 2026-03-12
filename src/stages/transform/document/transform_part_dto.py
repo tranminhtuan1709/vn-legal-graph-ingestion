@@ -1,13 +1,9 @@
-import time
 from typing import Any
 
 from dtos.document.part_dto import PartDto
-from utils.logger import logger
 
 
 def transform_part_dtos(raw_part_dtos: list[dict[str, Any]]) -> list[PartDto]:
-    start_time = time.time()
-
     try:
         part_dtos = [PartDto(**dto) for dto in raw_part_dtos]
 
@@ -21,6 +17,3 @@ def transform_part_dtos(raw_part_dtos: list[dict[str, Any]]) -> list[PartDto]:
         return part_dtos
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

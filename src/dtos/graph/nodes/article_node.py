@@ -7,6 +7,6 @@ class ArticleNode(Node):
     article_number: str | None
     article_name: str | None
     article_content: str | None
-    appendix: str | None
+    appendix_number: str | None
     effective_date: date | None
     

@@ -1,13 +1,9 @@
-import time
 from typing import Any
 
 from dtos.document.chapter_dto import ChapterDto
-from utils.logger import logger
 
 
 def transform_chapter_dtos(raw_chapter_dtos: list[dict[str, Any]]) -> list[ChapterDto]:
-    start_time = time.time()
-
     try:
         chapter_dtos = [ChapterDto(**dto) for dto in raw_chapter_dtos]
 
@@ -21,6 +17,3 @@ def transform_chapter_dtos(raw_chapter_dtos: list[dict[str, Any]]) -> list[Chapt
         return chapter_dtos
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

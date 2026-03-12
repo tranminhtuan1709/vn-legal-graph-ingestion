@@ -19,9 +19,9 @@ class DocumentMappingDto(BaseModel):
     to_document_id: int
     to_document_number: str | None
     to_document_name: str | None
-    to_issued_date: str | None
-    to_effective_date: str | None
-    to_expiry_date: str | None
+    to_issued_date: date | None
+    to_effective_date: date | None
+    to_expiry_date: date | None
     to_status: str | None
     to_small_note: str | None
     

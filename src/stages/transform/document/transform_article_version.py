@@ -1,13 +1,9 @@
-import time
 from typing import Any
 
 from dtos.document.article_version_dto import ArticleVersionDto
-from utils.logger import logger
 
 
 def transform_article_version_dtos(raw_article_version_dtos: list[dict[str, Any]]) -> list[ArticleVersionDto]:
-    start_time = time.time()
-
     try:
         article_version_dtos: list[ArticleVersionDto] = []
 
@@ -51,7 +47,4 @@ def transform_article_version_dtos(raw_article_version_dtos: list[dict[str, Any]
 
         return article_version_dtos
     except Exception:
-        pass
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    
+        raise

@@ -1,13 +1,8 @@
-import time
 from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from utils.logger import logger
-
 
 def fetch_articles(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str, Any]]:
-    start_time = time.time()
-
     try:
         cursor.execute(
             operation="""
@@ -21,7 +16,7 @@ def fetch_articles(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[s
                     section_number AS article_number,
                     section_name AS article_name,
                     section_content AS article_content,
-                    so_phu_luc AS appendix,
+                    so_phu_luc AS appendix_number,
                     DATE(effective_date) AS effective_date
                 FROM vbpl_section
                 WHERE vbpl_id = %(document_id)s
@@ -34,6 +29,3 @@ def fetch_articles(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[s
         return cursor.fetchall()
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

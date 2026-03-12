@@ -1,14 +1,10 @@
-import time
 import json
 from typing import Any
 
 from dtos.document.document_dto import DocumentDto
-from utils.logger import logger
 
 
 def transform_document_dto(raw_document_dto: dict[str, Any]) -> DocumentDto:
-    start_time = time.time()
-
     try:
         issuing_authorities = raw_document_dto.get("issuing_authorities")
         issuing_authority_ids = raw_document_dto.get("issuing_authority_ids")
@@ -54,6 +50,3 @@ def transform_document_dto(raw_document_dto: dict[str, Any]) -> DocumentDto:
         return document_dto
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

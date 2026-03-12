@@ -1,13 +1,8 @@
-import time
 from typing import Any
 from mysql.connector.abstracts import MySQLCursorAbstract
 
-from utils.logger import logger
-
 
 def fetch_big_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[str, Any]]:
-    start_time = time.time()
-
     try:
         cursor.execute(
             operation="""
@@ -27,6 +22,3 @@ def fetch_big_parts(cursor: MySQLCursorAbstract, document_id: int) -> list[dict[
         return cursor.fetchall()
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

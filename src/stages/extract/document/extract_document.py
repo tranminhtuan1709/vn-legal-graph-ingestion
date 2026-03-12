@@ -1,12 +1,8 @@
-import time
 from mysql.connector.abstracts import MySQLCursorAbstract
 from typing import Any
 
-from utils.logger import logger
 
 def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> dict[str, Any]:
-    start_time = time.time()
-
     try:
         cursor.execute(
             operation="""
@@ -36,6 +32,3 @@ def fetch_document(cursor: MySQLCursorAbstract, document_id: int) -> dict[str, A
         return cursor.fetchone()
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    

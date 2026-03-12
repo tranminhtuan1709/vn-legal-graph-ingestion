@@ -1,5 +1,3 @@
-import time
-
 from dtos.document.document_data import DocumentData
 from dtos.document.document_dto import DocumentDto
 from dtos.document.big_part_dto import BigPartDto
@@ -36,7 +34,6 @@ from dtos.graph.edges.suspend_edge import SuspendEdge
 from dtos.graph.edges.is_amended_to_edge import IsAmendedToEdge
 from dtos.graph.edges.implement_amendment_edge import ImplementAmendmentEdge
 
-from utils.logger import logger
 from utils.uuid_utils import get_node_id
 from utils.datetime_utils import get_current_timestamp
 
@@ -270,12 +267,11 @@ def article_dtos_to_graph(article_dtos: list[ArticleDto]) -> tuple[list[Node], l
 
     for dto in article_dtos:
         nodes.append(
-            ArticleDto(
-                document_id=dto.document_id,
-                big_part_id=dto.big_part_id,
-                chapter_id=dto.chapter_id,
-                part_id=dto.part_id,
-                mini_part_id=dto.mini_part_id,
+            ArticleNode(
+                node_id=get_node_id(business_id=dto.article_id, node_label="Article"),
+                node_label="Article",
+                created_at=get_current_timestamp(),
+                source="legal_document",
                 article_id=dto.article_id,
                 article_number=dto.article_number,
                 article_name=dto.article_name,
@@ -400,6 +396,8 @@ def document_mapping_dtos_to_graph(document_mapping_dtos: list[DocumentMappingDt
                     document_mapping_id=dto.mapping_id
                 )
             )
+    
+    return nodes, edges
 
 
 def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto]) -> tuple[list[Node], list[Edge]]:
@@ -419,7 +417,7 @@ def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto])
                 article_number=dto.from_article_number,
                 article_name=dto.from_article_name,
                 article_content=dto.from_article_content,
-                appendix=dto.from_appendix_number,
+                appendix_number=dto.from_appendix_number,
                 effective_date=dto.from_effective_date
             )
         )
@@ -434,7 +432,7 @@ def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto])
                 article_number=dto.to_article_number,
                 article_name=dto.to_article_name,
                 article_content=dto.to_article_content,
-                appendix=dto.to_appendix_number,
+                appendix_number=dto.to_appendix_number,
                 effective_date=dto.to_effective_date
             )
         )
@@ -454,7 +452,7 @@ def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto])
                     article_number=dto.from_article_number,
                     article_name=dto.from_article_name,
                     article_content=dto.modification_content,
-                    appendix=dto.from_appendix_number,
+                    appendix_number=dto.from_appendix_number,
                     effective_date=dto.from_effective_date
                 )
             )
@@ -485,7 +483,7 @@ def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto])
                 edges.append(
                     ImplementAmendmentEdge(
                         from_node_id=amending_node_id,
-                        to_node_id=last_versions.get(amended_node_id),
+                        to_node_id=new_version_node_id,
                         edge_type="IMPLEMENT_AMENDMENT",
                         created_at=get_current_timestamp(),
                         version_id=dto.version_id,
@@ -505,27 +503,31 @@ def article_version_dtos_to_graph(article_version_dtos: list[ArticleVersionDto])
                 )
             
             last_versions[amended_node_id] = new_version_node_id
+    
+    return nodes, edges
 
 
 def document_to_graph(document_data: DocumentData) -> tuple[list[Node], list[Edge]]:
-    start_time = time.time()
-
     try:
         nodes: list[Node] = []
         edges: list[Edge] = []
 
-        nodes.extend(document_dto_to_graph(document_data.document_dto))
-        nodes.extend(big_part_dtos_to_graph(document_data.big_part_dtos))
-        nodes.extend(chapter_dtos_to_graph(document_data.chapter_dtos))
-        nodes.extend(part_dtos_to_graph(document_data.part_dtos))
-        nodes.extend(mini_part_dtos_to_graph(document_data.mini_part_dtos))
-        nodes.extend(article_dtos_to_graph(document_data.article_dtos))
-        nodes.extend(document_mapping_dtos_to_graph(document_data.document_mapping_dtos))
-        nodes.extend(article_version_dtos_to_graph(document_data.article_version_dtos))
-        
-        return nodes, edges    
+        converters = [
+            (document_dto_to_graph, document_data.document_dto),
+            (big_part_dtos_to_graph, document_data.big_part_dtos),
+            (chapter_dtos_to_graph, document_data.chapter_dtos),
+            (part_dtos_to_graph, document_data.part_dtos),
+            (mini_part_dtos_to_graph, document_data.mini_part_dtos),
+            (article_dtos_to_graph, document_data.article_dtos),
+            (document_mapping_dtos_to_graph, document_data.document_mapping_dtos),
+            (article_version_dtos_to_graph, document_data.article_version_dtos),
+        ]
+
+        for func, data in converters:
+            n, e = func(data)
+            nodes.extend(n)
+            edges.extend(e)
+
+        return nodes, edges
     except Exception:
         raise
-    finally:
-        logger.info(f"{time.time() - start_time} s")
-    
