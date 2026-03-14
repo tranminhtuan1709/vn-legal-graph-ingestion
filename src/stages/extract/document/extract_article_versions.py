@@ -72,7 +72,7 @@ def fetch_article_versions(cursor: MySQLCursorAbstract, document_id: int) -> lis
                     article_versions.modification_content,
                     article_versions.is_abolish_previous_content,
                     DATE(article_versions.from_date) AS from_date,
-                    DATE(article_versions.to_date) AS from_date
+                    DATE(article_versions.to_date) AS to_date
                 FROM article_versions
                 JOIN vbpl_section AS vs1
                 ON
